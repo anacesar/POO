@@ -28,7 +28,6 @@ public class Parser {
                     break;
                 case "Voluntario":
                     Voluntario v = parseVoluntaro(linhaPartida[1]);
-                    if(checkVoluntario(v)) data.addVoluntario(v);
                     System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
                 case "Loja":
                     Loja l = parseLoja(linhaPartida[1]);

@@ -6,10 +6,9 @@ public class Entidade {
 
 
     /**
-     * Construtor parametrizado de um Ator.
+     * Construtor parametrizado de um Entidade.
      * Aceita como parâmetros cada componente necessária.
      */
-
     public Entidade(String email, String password, String nome, GPS gps) {
         this.email = email;
         this.password = password;
@@ -17,6 +16,10 @@ public class Entidade {
         this.gps = gps;
     }
 
+    /**
+     * Construtor parametrizado de uma Entidade.
+     * Necessário para a criação das diferentes entidades através da leitura do ficheiro de logs.
+     */
     public Entidade(String nome, GPS gps){
         String[] token = nome.split(" ");
         this.email = token[0] + "@email.com";
@@ -26,8 +29,8 @@ public class Entidade {
     }
 
     /**
-     * Construtor de cópia de um Ator.
-     * Aceita como parâmetro outro Ator e utiliza os métodos de acesso aos valores das variáveis de instância.
+     * Construtor de cópia de uma Entidade.
+     * Aceita como parâmetro uma Entidade e utiliza os métodos de acesso aos valores das variáveis de instância.
      */
     public Entidade(Entidade entidade) {
         this.email = entidade.getEmail();

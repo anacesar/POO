@@ -68,7 +68,7 @@ public class Voluntario extends Entidade {
     }
 
     public List<Encomenda> getEncomendas_aceites() {
-        return this.encomendas_aceites.stream().collect(Collectors.toList());
+        return new ArrayList<>(this.encomendas_aceites);
     }
 
     public void setEncomendas_aceites(List<Encomenda> encomendas_aceites) {
