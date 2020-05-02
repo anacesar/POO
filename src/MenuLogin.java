@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -12,32 +13,20 @@ public class MenuLogin extends Menu implements Serializable {
         this.password = "";
     }
 
-    public void executaParametros() {
+    public void readParametros() {
         System.out.print("E-mail: ");
         this.email = leString();
         System.out.print("Password: ");
         this.password = leString();
     }
 
-    public void executaReader(){
-        int aux;
+    public void executaLogin(){
+        int op;
         showMenu();
         do{
-            aux=lerOpcao();
-        } while(aux<0 || aux>4);
-        this.setOp(aux);
-    }
-
-    public String leString(){
-        String op = null;
-        Scanner sc = new Scanner(System.in);
-        try {
-            op = sc.nextLine();
-        }
-        catch (InputMismatchException e){
-            System.out.println("Não leu string");
-        }
-        return op;
+            op = lerOpcao();
+        } while(op<0 || op>4);
+        this.setOp(op);
     }
 
     public String getEmail(){

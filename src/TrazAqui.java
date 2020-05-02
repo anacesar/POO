@@ -22,7 +22,6 @@ public class TrazAqui {
         String[] loja = {};
         String[] empresa = {};
 
-        this.estado =
         }
 
     public static void main(String[] args) {
@@ -38,5 +37,6 @@ public class TrazAqui {
 
     public String getEstado(){
         String[] tempo = {"Sol","Vento","Chuva", "Muita Chuva"};
+        return null;
     }
 }
