@@ -73,6 +73,7 @@ public class Data implements Serializable {
         return exist;
     }
 
+    /*
     public void Entidade(Entidade entidade) throws EmailJaExisteException{
         if(entidade instanceof Utilizador && ! utilizadores.containsKey(entidade.getEmail())) utilizadores.put(entidade.getEmail(), (Utilizador) entidade.clone());
     }
@@ -86,4 +87,7 @@ public class Data implements Serializable {
         if(! voluntarios.containsKey(voluntario.getEmail())) voluntarios.put(voluntario.getEmail(), voluntario.clone());
         else throw new EmailJaExisteException();
     }
+
+
+     */
 }
