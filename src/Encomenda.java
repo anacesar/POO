@@ -8,7 +8,7 @@ public class Encomenda {
     private String morada;
     private int numero;
     private LocalDate data;
-    private ArrayList<Linha_Encomenda> linhas;
+    private List<Linha_Encomenda> linhas;
 
     public Encomenda() {
         this.nome = "";
