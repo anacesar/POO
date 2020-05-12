@@ -3,15 +3,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Encomenda {
-    private String nome;
+    private String codEncomenda;
+    private String codUtilizador;
+    private String codLoja;
+    private double peso;
+
     private String nif;
     private String morada;
-    private int numero;
+
+    private int numero;   // ?
     private LocalDate data;
     private List<Linha_Encomenda> linhas;
 
     public Encomenda() {
-        this.nome = "";
+        this.codEncomenda = "";
+        this.codUtilizador = "";
+        this.codLoja = "";
+        this.peso=0.0;
+
         this.nif = "";
         this.morada = "";
         this.numero = 0;
@@ -19,8 +28,25 @@ public class Encomenda {
         this.linhas = new ArrayList<>();
     }
 
-    public Encomenda(String nome, String nif, String morada, int numero, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
-        this.nome = nome;
+    public Encomenda(String codEncomenda,String codUtilizador,String codLoja,double peso, String nif, String morada, int numero, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
+        this.codEncomenda = "";
+        this.codUtilizador = "";
+        this.codLoja = "";
+        this.peso=0.0;
+
+        this.nif = nif;
+        this.morada = morada;
+        this.numero = numero;
+        this.data = data;
+        setLinhas(linhas);
+    }
+
+    public Encomenda(String codEncomenda,String codUtilizador,String codLoja, double peso, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
+        this.codEncomenda = "";
+        this.codUtilizador = "";
+        this.codLoja = "";
+        this.peso=0.0;
+
         this.nif = nif;
         this.morada = morada;
         this.numero = numero;
@@ -29,7 +55,11 @@ public class Encomenda {
     }
 
     public Encomenda(Encomenda encEficiente) {
-        this.nome = encEficiente.getNome();
+        this.codEncomenda = encEficiente.getEncomenda();
+        this.codUtilizador = encEficiente.getUtilizador();
+        this.codLoja = encEficiente.getLoja();
+        this.peso= encEficiente.getPeso();
+
         this.nif = encEficiente.getNif();
         this.morada = encEficiente.getMorada();
         this.numero = encEficiente.getNumero();
@@ -37,9 +67,37 @@ public class Encomenda {
         setLinhas(encEficiente.getLinhas());
     }
 
-    public String getNome() {return this.nome;}
+    public String getCodEncomenda() {
+        return codEncomenda;
+    }
 
-    public void setNome(String nome) {this.nome = nome;}
+    public void setCodEncomenda(String codEncomenda) {
+        this.codEncomenda = codEncomenda;
+    }
+
+    public String getCodUtilizador() {
+        return codUtilizador;
+    }
+
+    public void setCodUtilizador(String codUtilizador) {
+        this.codUtilizador = codUtilizador;
+    }
+
+    public String getCodLoja() {
+        return codLoja;
+    }
+
+    public void setCodLoja(String codLoja) {
+        this.codLoja = codLoja;
+    }
+
+    public double getPeso() {
+        return peso;
+    }
+
+    public void setPeso(double peso) {
+        this.peso = peso;
+    }
 
     public String getNif() {return this.nif;}
 

@@ -10,10 +10,13 @@ public class Data implements Serializable {
     private Map<String, Voluntario> voluntarios; // EMAIL -> voluntario
     private Map<String, Empresa> empresas; // EMAIL -> empresa
     private Map<String, Loja> lojas; // EMAIL -> loja
+    private Map<String, Encomenda> encomendas; //// codEncomenda -> encomenda
     private int nUtilizadores; //inteiro usado para atribuir código de utilizador
     private int nVoluntarios;
     private int nEmpresas;
     private int nLojas;
+    private int nEncomendas;
+
 
     public Data() {
         this.utilizadores = new HashMap<>();
@@ -42,6 +45,14 @@ public class Data implements Serializable {
 
     public void setnLojas(int nLojas) {
         this.nLojas = nLojas;
+    }
+
+    public int getnEncomendas() {
+        return nEncomendas;
+    }
+
+    public void setnEncomendas(int nEncomendas) {
+        this.nEncomendas = nEncomendas;
     }
 
     public boolean checkLogin(Integer tipo, String email, String password){
@@ -86,4 +97,21 @@ public class Data implements Serializable {
         if(! voluntarios.containsKey(voluntario.getEmail())) voluntarios.put(voluntario.getEmail(), voluntario.clone());
         else throw new EmailJaExisteException();
     }
+
+    public void addEmpresa(Empresa empresa) throws EmailJaExisteException {
+        if(! empresa.containsKey(empresa.getEmail())) empresa.put(empresa.getEmail(), empresa.clone());
+        else throw new EmailJaExisteException();
+    }
+
+    public void addLoja(Loja loja) throws EmailJaExisteException {
+        if(! loja.containsKey(loja.getEmail())) loja.put(loja.getEmail(), loja.clone());
+        else throw new EmailJaExisteException();
+    }
+
+    public void addEncomenda(Encomenda encomenda) throws EmailJaExisteException {
+        if(! encomenda.containsKey(encomenda.getCodEncomenda())) encomenda.put(encomenda.getCodEncomenda(), encomenda.clone());
+        else throw new EmailJaExisteException();
+    }
+
+
 }

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.*;
 
 public class Parser {
     private Data data;
@@ -27,12 +28,19 @@ public class Parser {
                     System.out.println(u.toString()); //enviar para o ecrÃ¡n apenas para teste
                     break;
                 case "Voluntario":
-                    Voluntario v = parseVoluntaro(linhaPartida[1]);
+                    Voluntario v = parseVoluntario(linhaPartida[1]);
+                    if(checkVoluntario(v)) data.addVoluntario(v);
                     System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
                 case "Loja":
                     Loja l = parseLoja(linhaPartida[1]);
                     System.out.println(l.toString());
                     break;
+                case "Encomenda":
+                    Encomenda e = parseEncomenda(linhaPartida[1]);
+                    System.out.println(e.toString());
+                    break;
+                case "Aceite":
+                  //  if(checkEncomendaAceite(linhaPartida[1])) data.add(u);
                 default:
                     System.out.println("Linha inválida.");
                     break;
@@ -63,7 +71,30 @@ public class Parser {
         return valid;
     }
 
-    public Voluntario parseVoluntaro(String input){
+    public boolean checkVoluntario(Voluntario voluntario) throws NomeInvalidoException {
+        boolean valid = true;
+
+        String codVoluntario = voluntario.getCodVoluntario();
+        if(! (codVoluntario.charAt(0) == 'v')) valid = false;
+        int nr =  Integer.parseInt(codVoluntario.substring(1));
+        if(this.data.getnVoluntarios() < nr) data.setnVoluntarios(++nr);
+
+        if (voluntario.getNome().matches("[0-9]+")) throw new NomeInvalidoException();
+        return valid;
+    }
+
+    public Voluntario parseUtilizador(String input){
+        String[] campos = input.split(",");
+        String codUtilizador = campos[0];
+        int nr =  Integer.parseInt(codUtilizador.substring(1));
+        if(this.data.getnUtilizadores() < nr) data.setnUtilizadores(++nr);
+        String nome = campos[1];
+        double gpsx = Double.parseDouble(campos[2]);
+        double gpsy = Double.parseDouble(campos[3]);
+        return new Utilizador(codUtilizador, nome, new GPS(gpsx, gpsy));
+    }
+
+    public Voluntario parseVoluntario(String input){
         String[] campos = input.split(",");
         String codVoluntario = campos[0];
         int nr =  Integer.parseInt(codVoluntario.substring(1));
@@ -84,6 +115,19 @@ public class Parser {
         double gpsx = Double.parseDouble(campos[2]);
         double gpsy = Double.parseDouble(campos[3]);
         return new Loja(codLoja, nomeLoja, new GPS(gpsx,gpsy));
+    }
+
+    public Encomenda parseEncomenda(String input){
+        String[] campos = input.split(",");
+        String codEncomenda = campos[0];
+        int nr = Integer.parseInt(codEncomenda.substring(1));
+        if(this.data.getnEncomendas() < nr) data.setnEncomendas(++nr);
+        String codEncomenda = campos[1];
+        String codUtilizador = campos[2];
+        String codLoja = campos[3];
+        double peso = campos[4];
+        linhas linhaenc = campos[5]
+        return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, linhaenc, localDate.now() );
     }
 
     public List<String> lerFicheiro(String nomeFich) {

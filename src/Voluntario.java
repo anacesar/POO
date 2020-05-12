@@ -43,11 +43,11 @@ public class Voluntario extends Entidade {
         this.encomendas_aceites = voluntario.getEncomendas_aceites();
     }
 
-    public String getCodcodVoluntario() {
+    public String getCodVoluntario() {
         return this.codVoluntario;
     }
 
-    public void setCodUtilizador(String codcodVoluntario) {
+    public void setCodVoluntario(String codVoluntario) {
         this.codVoluntario = codVoluntario;
     }
 
