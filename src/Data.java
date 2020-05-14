@@ -84,6 +84,7 @@ public class Data implements Serializable {
         return exist;
     }
 
+    /*
     public void Entidade(Entidade entidade) throws EmailJaExisteException{
         if(entidade instanceof Utilizador && ! utilizadores.containsKey(entidade.getEmail())) utilizadores.put(entidade.getEmail(), (Utilizador) entidade.clone());
     }
