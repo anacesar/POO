@@ -37,7 +37,7 @@ public class Voluntario extends Entidade {
      */
     public Voluntario(Voluntario voluntario) {
         super(voluntario.getEmail(), voluntario.getPassword(), voluntario.getNome(), voluntario.getGps());
-        this.codVoluntario = voluntario.getCodcodVoluntario();
+        this.codVoluntario = voluntario.getCodVoluntario();
         this.raio = voluntario.getRaio();
         this.classificacao = voluntario.getClassificacao();
         this.encomendas_aceites = voluntario.getEncomendas_aceites();

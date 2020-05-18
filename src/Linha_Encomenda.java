@@ -42,7 +42,7 @@ public class Linha_Encomenda {
         return this.preco;
     }
 
-    public void setRef(String codProduto) {
+    public void setCodProduto(String codProduto) {
         this.codProduto = codProduto;
     }
 

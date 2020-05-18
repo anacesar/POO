@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Loja extends Entidade {
     private String codLoja;
@@ -20,13 +19,13 @@ public class Loja extends Entidade {
      * Construtor parametrizado de uma Loja.
      * Necessário para a criação de uma loja através da leitura do ficheiro de logs.
      */
-    public Loja(String codLoja, String nome, GPS gps){
+    public Loja(String codLoja, String nome, GPS gps) {
         super(nome, gps);
         this.codLoja = codLoja;
         this.queue = new ArrayList<>();
     }
 
-    public Loja(Loja loja){
+    public Loja(Loja loja) {
         super(loja.getEmail(), loja.getPassword(), loja.getNome(), loja.getGps());
         this.codLoja = loja.getCodLoja();
     }
@@ -41,10 +40,14 @@ public class Loja extends Entidade {
     }
 
     public List<Encomenda> getQueue() {
-        return new ArrayList<>(this.queue);
+        return this.queue;
     }
 
     public void setQueue(List<Encomenda> queue) {
         this.queue = queue;
+    }
+
+    public Loja clone() {
+        return new Loja(this);
     }
 }

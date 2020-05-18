@@ -8,9 +8,9 @@ public class Utilizador extends Entidade {
      * Construtor parametrizado de um Utilizador.
      * * Aceita como parâmetros cada componente necessária excepto o código de Utilizador.
      */
-    public Utilizador(String email, String password, String nome, GPS gps) {
+    public Utilizador(String email, String password, String nome, GPS gps, int number) {
         super(email, password, nome, gps);
-        this.codUtilizador = codUtilizador;
+        this.codUtilizador = "u" + number;
     }
 
     /**

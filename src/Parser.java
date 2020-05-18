@@ -83,16 +83,6 @@ public class Parser {
         return valid;
     }
 
-    public Voluntario parseUtilizador(String input){
-        String[] campos = input.split(",");
-        String codUtilizador = campos[0];
-        int nr =  Integer.parseInt(codUtilizador.substring(1));
-        if(this.data.getnUtilizadores() < nr) data.setnUtilizadores(++nr);
-        String nome = campos[1];
-        double gpsx = Double.parseDouble(campos[2]);
-        double gpsy = Double.parseDouble(campos[3]);
-        return new Utilizador(codUtilizador, nome, new GPS(gpsx, gpsy));
-    }
 
     public Voluntario parseVoluntario(String input){
         String[] campos = input.split(",");
@@ -122,13 +112,20 @@ public class Parser {
         String codEncomenda = campos[0];
         int nr = Integer.parseInt(codEncomenda.substring(1));
         if(this.data.getnEncomendas() < nr) data.setnEncomendas(++nr);
-        String codEncomenda = campos[1];
-        String codUtilizador = campos[2];
-        String codLoja = campos[3];
-        double peso = campos[4];
-        linhas linhaenc = campos[5]
-        return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, linhaenc, localDate.now() );
+        String codUtilizador = campos[1];
+        String codLoja = campos[2];
+        double peso = Double.parseDouble(campos[3]);
+
+       ArrayList<Linha_Encomenda> lle = null;
+       for(int i=4 ;campos!= null; i=i+4){
+           Linha_Encomenda le = new Linha_Encomenda(campos[i], campos[i+1], Double.parseDouble(campos[i+2]), Double.parseDouble(campos[i+3]));
+           lle.add(le);
+       }
+
+        return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, LocalDate.now() , lle);
     }
+
+
 
     public List<String> lerFicheiro(String nomeFich) {
         List<String> lines = new ArrayList<>();

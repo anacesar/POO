@@ -1,8 +1,7 @@
 import Exceptions.EmailJaExisteException;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Data implements Serializable {
 
@@ -84,7 +83,9 @@ public class Data implements Serializable {
         return exist;
     }
 
-    /*
+
+
+
     public void Entidade(Entidade entidade) throws EmailJaExisteException{
         if(entidade instanceof Utilizador && ! utilizadores.containsKey(entidade.getEmail())) utilizadores.put(entidade.getEmail(), (Utilizador) entidade.clone());
     }
@@ -100,17 +101,17 @@ public class Data implements Serializable {
     }
 
     public void addEmpresa(Empresa empresa) throws EmailJaExisteException {
-        if(! empresa.containsKey(empresa.getEmail())) empresa.put(empresa.getEmail(), empresa.clone());
+        if(! empresas.containsKey(empresa.getEmail())) empresas.put(empresa.getEmail(), empresa.clone());
         else throw new EmailJaExisteException();
     }
 
     public void addLoja(Loja loja) throws EmailJaExisteException {
-        if(! loja.containsKey(loja.getEmail())) loja.put(loja.getEmail(), loja.clone());
+        if(! lojas.containsKey(loja.getEmail())) lojas.put(loja.getEmail(), loja.clone());
         else throw new EmailJaExisteException();
     }
 
     public void addEncomenda(Encomenda encomenda) throws EmailJaExisteException {
-        if(! encomenda.containsKey(encomenda.getCodEncomenda())) encomenda.put(encomenda.getCodEncomenda(), encomenda.clone());
+        if(! encomendas.containsKey(encomenda.getCodEncomenda())) encomendas.put(encomenda.getCodEncomenda(), encomenda.clone());
         else throw new EmailJaExisteException();
     }
 
