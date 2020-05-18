@@ -29,19 +29,33 @@ public class Data implements Serializable {
         this.nLojas = 0;
     }
 
-    public int getnUtilizadores() { return this.nUtilizadores; }
+    public int getnUtilizadores() {
+        return this.nUtilizadores;
+    }
 
-    public void setnUtilizadores(int nUtilizadores) { this.nUtilizadores = nUtilizadores; }
+    public void setnUtilizadores(int nUtilizadores) {
+        this.nUtilizadores = nUtilizadores;
+    }
 
-    public int getnVoluntarios() { return this.nVoluntarios; }
+    public int getnVoluntarios() {
+        return this.nVoluntarios;
+    }
 
-    public void setnVoluntarios(int nVoluntarios) { this.nVoluntarios = nVoluntarios; }
+    public void setnVoluntarios(int nVoluntarios) {
+        this.nVoluntarios = nVoluntarios;
+    }
 
-    public int getnEmpresas() { return this.nEmpresas; }
+    public int getnEmpresas() {
+        return this.nEmpresas;
+    }
 
-    public void setnEmpresas(int nEmpresas) { this.nEmpresas = nEmpresas; }
+    public void setnEmpresas(int nEmpresas) {
+        this.nEmpresas = nEmpresas;
+    }
 
-    public int getnLojas() { return this.nLojas; }
+    public int getnLojas() {
+        return this.nLojas;
+    }
 
     public void setnLojas(int nLojas) {
         this.nLojas = nLojas;
@@ -55,34 +69,35 @@ public class Data implements Serializable {
         this.nEncomendas = nEncomendas;
     }
 
-    public boolean checkLogin(Integer tipo, String email, String password){
+    public boolean checkLogin(Integer tipo, String email, String password) {
         boolean exist;
-        switch (tipo){
+        switch (tipo) {
             case 1:
                 exist = this.utilizadores.containsKey(email);
-                if(exist && this.utilizadores.get(email).getPassword().equals(password)) exist = true;
-                else  exist = false;
+                if (exist && this.utilizadores.get(email).getPassword().equals(password)) exist = true;
+                else exist = false;
                 break;
             case 2:
                 exist = this.voluntarios.containsKey(email);
-                if(exist && this.voluntarios.get(email).getPassword().equals(password)) exist = true;
-                else  exist = false;
+                if (exist && this.voluntarios.get(email).getPassword().equals(password)) exist = true;
+                else exist = false;
                 break;
             case 3:
                 exist = this.empresas.containsKey(email);
-                if(exist && this.empresas.get(email).getPassword().equals(password)) exist = true;
-                else  exist = false;
+                if (exist && this.empresas.get(email).getPassword().equals(password)) exist = true;
+                else exist = false;
                 break;
             case 4:
                 exist = this.lojas.containsKey(email);
-                if(exist && this.lojas.get(email).getPassword().equals(password)) exist = true;
-                else  exist = false;
+                if (exist && this.lojas.get(email).getPassword().equals(password)) exist = true;
+                else exist = false;
                 break;
             default:
                 exist = false;
         }
         return exist;
     }
+}
 
     /*
     public void Entidade(Entidade entidade) throws EmailJaExisteException{

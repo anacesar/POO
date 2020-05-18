@@ -126,8 +126,9 @@ public class Parser {
         String codUtilizador = campos[2];
         String codLoja = campos[3];
         double peso = campos[4];
-        linhas linhaenc = campos[5]
-        return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, linhaenc, localDate.now() );
+        //Linha_Encomenda linhaenc = campos[5] esta mal
+        return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, LocalDate.now()
+        );
     }
 
     public List<String> lerFicheiro(String nomeFich) {
