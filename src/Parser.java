@@ -112,6 +112,7 @@ public class Parser {
         String codEncomenda = campos[0];
         int nr = Integer.parseInt(codEncomenda.substring(1));
         if(this.data.getnEncomendas() < nr) data.setnEncomendas(++nr);
+
         String codUtilizador = campos[1];
         String codLoja = campos[2];
         double peso = Double.parseDouble(campos[3]);
@@ -124,6 +125,7 @@ public class Parser {
        }
 
         return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, LocalDate.now() , lle);
+
     }
 
 

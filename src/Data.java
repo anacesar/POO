@@ -31,19 +31,33 @@ public class Data implements Serializable {
         this.nLojas = 0;
     }
 
-    public int getnUtilizadores() { return this.nUtilizadores; }
+    public int getnUtilizadores() {
+        return this.nUtilizadores;
+    }
 
-    public void setnUtilizadores(int nUtilizadores) { this.nUtilizadores = nUtilizadores; }
+    public void setnUtilizadores(int nUtilizadores) {
+        this.nUtilizadores = nUtilizadores;
+    }
 
-    public int getnVoluntarios() { return this.nVoluntarios; }
+    public int getnVoluntarios() {
+        return this.nVoluntarios;
+    }
 
-    public void setnVoluntarios(int nVoluntarios) { this.nVoluntarios = nVoluntarios; }
+    public void setnVoluntarios(int nVoluntarios) {
+        this.nVoluntarios = nVoluntarios;
+    }
 
-    public int getnEmpresas() { return this.nEmpresas; }
+    public int getnEmpresas() {
+        return this.nEmpresas;
+    }
 
-    public void setnEmpresas(int nEmpresas) { this.nEmpresas = nEmpresas; }
+    public void setnEmpresas(int nEmpresas) {
+        this.nEmpresas = nEmpresas;
+    }
 
-    public int getnLojas() { return this.nLojas; }
+    public int getnLojas() {
+        return this.nLojas;
+    }
 
     public void setnLojas(int nLojas) {
         this.nLojas = nLojas;
@@ -61,7 +75,7 @@ public class Data implements Serializable {
 
     public boolean checkLogin(Integer tipo, String email, String password) throws EmailNaoRegistadoException{
         boolean exist;
-        switch (tipo){
+        switch (tipo) {
             case 1:
                 exist= this.utilizadores.containsKey(email);
                // if(!exist) throw new EmailNaoRegistadoException();
@@ -91,6 +105,7 @@ public class Data implements Serializable {
         }
         return exist;
     }
+}
 
 
 
