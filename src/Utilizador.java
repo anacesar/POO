@@ -18,8 +18,8 @@ public class Utilizador extends Entidade {
      * Necessário para a criação de um Utilizador através da leitura do ficheiro de logs.
      */
     public Utilizador(String codUtilizador, String nome, GPS gps) {
-        super(nome, gps);
-        this.codUtilizador = codUtilizador;
+        super(codUtilizador,nome, gps);
+        this.codUtilizador=codUtilizador;
     }
 
     /**

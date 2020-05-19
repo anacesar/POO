@@ -1,6 +1,8 @@
 
 
 import Exceptions.EmailJaExisteException;
+import Exceptions.EmailNaoRegistadoException;
+import Exceptions.NomeInvalidoException;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -8,7 +10,7 @@ import java.util.Scanner;
 public class Main {
 
 
-    public static void main(String[] args) throws EmailJaExisteException, IOException {
+    public static void main(String[] args) throws EmailJaExisteException, IOException, EmailNaoRegistadoException, NomeInvalidoException {
         Data data= new Data();
         Scanner scanner = new Scanner(System.in);
         TrazAqui app = new TrazAqui();
@@ -21,7 +23,7 @@ public class Main {
             System.out.println("Failed to load Status");
         }
 
-
+        app.carregaDados();
 
         boolean sair = false;
 
@@ -36,11 +38,11 @@ public class Main {
                     break;
                 case "3":
                     sair = true;
-                    app.getView().printMensagem("Obrigado!");
+                    app.getView().printMensagem("Obrigada!");
                     ds.serializeToXML(app);
                     break;
                 default:
-                    app.getView().printMensagem("Opção não encontrada!");
+                    app.getView().printMensagem("Opção inválida!");
                     break;
             }
         }

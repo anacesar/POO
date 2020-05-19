@@ -9,8 +9,8 @@ public class Loja extends Entidade {
      * Construtor parametrizado de uma Loja.
      * Aceita como parâmetros cada componente necessária.
      */
-    public Loja(String email, String password, String nome, GPS gps, int number) {
-        super(email, password, nome, gps);
+    public Loja(String codLoja, String email, String password, String nome, GPS gps, int number) {
+        super(nome, email, password, gps);
         this.codLoja = "l" + number;
         this.queue = new ArrayList<>();
     }
@@ -20,8 +20,8 @@ public class Loja extends Entidade {
      * Necessário para a criação de uma loja através da leitura do ficheiro de logs.
      */
     public Loja(String codLoja, String nome, GPS gps) {
-        super(nome, gps);
-        this.codLoja = codLoja;
+        super(codLoja,nome, gps);
+        this.codLoja=codLoja;
         this.queue = new ArrayList<>();
     }
 

@@ -17,7 +17,7 @@ public class Parser {
     }
 
     public void parse() throws EmailJaExisteException, NomeInvalidoException {
-        List<String> linhas = lerFicheiro("LogsGerados.csv"); //alterar nome do ficheiro
+        List<String> linhas = lerFicheiro("logs_dados.txt"); //alterar nome do ficheiro
         String[] linhaPartida;
         for (String linha : linhas) {
             linhaPartida = linha.split(":", 2);
@@ -25,19 +25,19 @@ public class Parser {
                 case "Utilizador":
                     Utilizador u = parseUtilizador(linhaPartida[1]); // criar um Utilizador
                     if(checkUtilizador(u)) data.addUtilizador(u);
-                    System.out.println(u.toString()); //enviar para o ecrÃ¡n apenas para teste
+                   // System.out.println(u.toString()); //enviar para o ecrÃ¡n apenas para teste
                     break;
                 case "Voluntario":
                     Voluntario v = parseVoluntario(linhaPartida[1]);
                     if(checkVoluntario(v)) data.addVoluntario(v);
-                    System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
+                   // System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
                 case "Loja":
                     Loja l = parseLoja(linhaPartida[1]);
                     System.out.println(l.toString());
                     break;
                 case "Encomenda":
                     Encomenda e = parseEncomenda(linhaPartida[1]);
-                    System.out.println(e.toString());
+                   // System.out.println(e.toString());
                     break;
                 case "Aceite":
                   //  if(checkEncomendaAceite(linhaPartida[1])) data.add(u);
@@ -47,7 +47,7 @@ public class Parser {
             }
 
         }
-        System.out.println("done!");
+        System.out.println("Dados Carregados!");
     }
 
     public Utilizador parseUtilizador(String input){
@@ -63,7 +63,7 @@ public class Parser {
         boolean valid = true;
 
         String codUtilizador = utilizador.getCodUtilizador();
-        if(! (codUtilizador.charAt(0) == 'u')) valid = false;
+           if(! (codUtilizador.charAt(0) == 'u')) valid = false;
         int nr =  Integer.parseInt(codUtilizador.substring(1));
         if(this.data.getnUtilizadores() < nr) data.setnUtilizadores(++nr);
 
@@ -116,10 +116,11 @@ public class Parser {
         String codLoja = campos[2];
         double peso = Double.parseDouble(campos[3]);
 
-       ArrayList<Linha_Encomenda> lle = null;
-       for(int i=4 ;campos!= null; i=i+4){
+       ArrayList<Linha_Encomenda> lle = new ArrayList<>();
+       for(int i=4 ;i<(campos.length);i=i+4){
            Linha_Encomenda le = new Linha_Encomenda(campos[i], campos[i+1], Double.parseDouble(campos[i+2]), Double.parseDouble(campos[i+3]));
            lle.add(le);
+
        }
 
         return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, LocalDate.now() , lle);

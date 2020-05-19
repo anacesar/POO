@@ -1,7 +1,10 @@
 import Exceptions.EmailJaExisteException;
+import Exceptions.EmailNaoRegistadoException;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Data implements Serializable {
 
@@ -54,26 +57,32 @@ public class Data implements Serializable {
         this.nEncomendas = nEncomendas;
     }
 
-    public boolean checkLogin(Integer tipo, String email, String password){
+
+
+    public boolean checkLogin(Integer tipo, String email, String password) throws EmailNaoRegistadoException{
         boolean exist;
         switch (tipo){
             case 1:
-                exist = this.utilizadores.containsKey(email);
+                exist= this.utilizadores.containsKey(email);
+               // if(!exist) throw new EmailNaoRegistadoException();
                 if(exist && this.utilizadores.get(email).getPassword().equals(password)) exist = true;
                 else  exist = false;
                 break;
             case 2:
                 exist = this.voluntarios.containsKey(email);
+               // if(!exist) throw new EmailNaoRegistadoException();
                 if(exist && this.voluntarios.get(email).getPassword().equals(password)) exist = true;
                 else  exist = false;
                 break;
             case 3:
                 exist = this.empresas.containsKey(email);
+                //if(!exist) throw new EmailNaoRegistadoException();
                 if(exist && this.empresas.get(email).getPassword().equals(password)) exist = true;
                 else  exist = false;
                 break;
             case 4:
                 exist = this.lojas.containsKey(email);
+                //if(!exist) throw new EmailNaoRegistadoException();
                 if(exist && this.lojas.get(email).getPassword().equals(password)) exist = true;
                 else  exist = false;
                 break;

@@ -4,36 +4,40 @@ import java.util.stream.Collectors;
 
 
 public class Empresa extends Entidade {
-    private String codloja;
+    private String codEmpresa;
     private double classificacao;
     private List<Encomenda> encomendas_aceites;
 
     public Empresa(String email, String password, String nome, GPS gps, int number) {
-        super(email, password, nome, gps);
-        this.codloja = "l" + number;
+        super( nome,email, password, gps);
+        this.codEmpresa = "l" + number;
         this.classificacao = 0;
         this.encomendas_aceites = new ArrayList<>();
     }
 
-    public Empresa(String nome, GPS gps, String codloja) {
-        super(nome, gps);
-        this.codloja = codloja;
+    /**
+     * Construtor parametrizado de um Voluntario.
+     * Necessário para a criação de um Voluntario através da leitura do ficheiro de logs.
+     */
+    public Empresa (String nome, GPS gps, String codEmpresa) {
+        super(codEmpresa,nome, gps);
+        this.codEmpresa=codEmpresa;
         this.encomendas_aceites = new ArrayList<>();
     }
 
     public Empresa(Empresa empresa) {
         super(empresa.getEmail(), empresa.getPassword(), empresa.getNome(), empresa.getGps());
-        this.codloja = empresa.getCodloja();
+        this.codEmpresa = empresa.getCodloja();
         this.classificacao = empresa.getClassificacao();
         this.encomendas_aceites = empresa.getEncomendas_aceites();
     }
 
     public String getCodloja() {
-        return this.codloja;
+        return this.codEmpresa;
     }
 
     public void setCodloja(String codloja) {
-        this.codloja = codloja;
+        this.codEmpresa = codloja;
     }
 
     public double getClassificacao() {
