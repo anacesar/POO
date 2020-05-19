@@ -2,14 +2,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Empresa extends Entidade{
+
+public class Empresa extends Entidade {
     private String codloja;
     private double classificacao;
     private List<Encomenda> encomendas_aceites;
 
-    public Empresa(String email, String password, String nome, GPS gps, String codloja) {
+    public Empresa(String email, String password, String nome, GPS gps, int number) {
         super(email, password, nome, gps);
-        this.codloja = codloja;
+        this.codloja = "l" + number;
         this.classificacao = 0;
         this.encomendas_aceites = new ArrayList<>();
     }
@@ -44,7 +45,7 @@ public class Empresa extends Entidade{
     }
 
     public List<Encomenda> getEncomendas_aceites() {
-        return new ArrayList<>(this.encomendas_aceites);
+        return this.encomendas_aceites;
     }
 
     public void setEncomendas_aceites(List<Encomenda> encomendas_aceites) {
@@ -52,8 +53,10 @@ public class Empresa extends Entidade{
     }
 
     public void addClassificacao(double cl) {
-        this.classificacao = (this.classificacao + cl) /2;
+        this.classificacao = (this.classificacao + cl) / 2;
     }
 
-
+    public Empresa clone() {
+        return new Empresa(this);
+    }
 }

@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Encomenda {
     private String codEncomenda;
@@ -55,9 +56,9 @@ public class Encomenda {
     }
 
     public Encomenda(Encomenda encEficiente) {
-        this.codEncomenda = encEficiente.getEncomenda();
-        this.codUtilizador = encEficiente.getUtilizador();
-        this.codLoja = encEficiente.getLoja();
+        this.codEncomenda = encEficiente.getCodEncomenda();
+        this.codUtilizador = encEficiente.getCodUtilizador();
+        this.codLoja = encEficiente.getCodLoja();
         this.peso= encEficiente.getPeso();
 
         this.nif = encEficiente.getNif();
