@@ -25,6 +25,7 @@ public class Data implements Serializable {
         this.voluntarios = new HashMap<>();
         this.empresas = new HashMap<>();
         this.lojas = new HashMap<>();
+        this.encomendas = new HashMap<>();
         this.nUtilizadores = 0;
         this.nVoluntarios = 0;
         this.nEmpresas = 0;
@@ -105,7 +106,7 @@ public class Data implements Serializable {
         }
         return exist;
     }
-}
+
 
 
 

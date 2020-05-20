@@ -33,11 +33,18 @@ public class Parser {
                    // System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
                 case "Loja":
                     Loja l = parseLoja(linhaPartida[1]);
-                    System.out.println(l.toString());
+                    if(checkLoja(l)) data.addLoja(l);
+                   // System.out.println(l.toString());
+                    break;
+                case "Transportadora":
+                    Empresa t = parseEmpresa(linhaPartida[1]);
+                    if(checkEmpresa(t)) data.addEmpresa(t);
+                    // System.out.println(l.toString());
                     break;
                 case "Encomenda":
                     Encomenda e = parseEncomenda(linhaPartida[1]);
-                   // System.out.println(e.toString());
+                    if(checkEncomenda(e)) data.addEncomenda(e);
+                    //System.out.println(e.toString());
                     break;
                 case "Aceite":
                   //  if(checkEncomendaAceite(linhaPartida[1])) data.add(u);
@@ -50,14 +57,7 @@ public class Parser {
         System.out.println("Dados Carregados!");
     }
 
-    public Utilizador parseUtilizador(String input){
-        String[] campos = input.split(",");
-        String codUtilizador = campos[0];
-        String nome = campos[1];
-        double gpsx = Double.parseDouble(campos[2]);
-        double gpsy = Double.parseDouble(campos[3]);
-        return new Utilizador(codUtilizador, nome, new GPS(gpsx, gpsy));
-    }
+
 
     public boolean checkUtilizador(Utilizador utilizador) throws NomeInvalidoException {
         boolean valid = true;
@@ -83,6 +83,49 @@ public class Parser {
         return valid;
     }
 
+    public boolean checkLoja(Loja loja) throws NomeInvalidoException {
+        boolean valid = true;
+
+        String codLoja = loja.getCodLoja();
+        if(! (codLoja.charAt(0) == 'l')) valid = false;
+        int nr =  Integer.parseInt(codLoja.substring(1));
+        if(this.data.getnLojas() < nr) data.setnLojas(++nr);
+
+        if (loja.getNome().matches("[0-9]+")) throw new NomeInvalidoException();
+        return valid;
+    }
+
+    public boolean checkEmpresa(Empresa empresa) throws NomeInvalidoException {
+        boolean valid = true;
+
+        String codEmpresa = empresa.getCodEmpresa();
+        if(! (codEmpresa.charAt(0) == 't')) valid = false;
+        int nr =  Integer.parseInt(codEmpresa.substring(1));
+        if(this.data.getnEmpresas() < nr) data.setnEmpresas(++nr);
+
+        if (empresa.getNome().matches("[0-9]+")) throw new NomeInvalidoException();
+        return valid;
+    }
+
+    public boolean checkEncomenda(Encomenda encomenda) throws NomeInvalidoException {
+        boolean valid = true;
+
+        String codEncomenda = encomenda.getCodEncomenda();
+        if(! (codEncomenda.charAt(0) == 'e')) valid = false;  //VAI DAR TRUE TAMBEM PARA AS ACEITES
+        int nr =  Integer.parseInt(codEncomenda.substring(1));
+        if(this.data.getnEncomendas() < nr) data.setnEncomendas(++nr);
+
+        return valid;
+    }
+
+    public Utilizador parseUtilizador(String input){
+        String[] campos = input.split(",");
+        String codUtilizador = campos[0];
+        String nome = campos[1];
+        double gpsx = Double.parseDouble(campos[2]);
+        double gpsy = Double.parseDouble(campos[3]);
+        return new Utilizador(codUtilizador, nome, new GPS(gpsx, gpsy));
+    }
 
     public Voluntario parseVoluntario(String input){
         String[] campos = input.split(",");
@@ -105,6 +148,19 @@ public class Parser {
         double gpsx = Double.parseDouble(campos[2]);
         double gpsy = Double.parseDouble(campos[3]);
         return new Loja(codLoja, nomeLoja, new GPS(gpsx,gpsy));
+    }
+
+    public Empresa parseEmpresa(String input){
+        String[] campos = input.split(",");
+        String codEmpresa = campos[0];
+        String nome = campos[1];
+        double gpsx = Double.parseDouble(campos[2]);
+        double gpsy = Double.parseDouble(campos[3]);
+        String nif = campos[4];
+        double raio= Double.parseDouble(campos[5]);
+        double precokm= Double.parseDouble(campos[6]);
+
+        return new Empresa(codEmpresa, nome, new GPS(gpsx, gpsy), nif, raio, precokm);
     }
 
     public Encomenda parseEncomenda(String input){

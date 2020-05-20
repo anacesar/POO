@@ -80,8 +80,17 @@ public class TrazAqui {
                          this.view.printMensagem("Voluntário já existente! ");
                      }
                  }else {
+                     this.view.printMensagem("Raio de ação: ");
+                     double raio= this.view.getDouble();
+
+                     this.view.printMensagem("Nif: ");
+                     String nif= this.view.getString();
+
+                     this.view.printMensagem("Preço por km: ");
+                     Double precokm= this.view.getDouble();
+
                      int ne= this.data.getnEmpresas();
-                     Empresa e = new Empresa(email, pwd, nome,new GPS(gpsx, gpsy), ne+1);
+                     Empresa e = new Empresa(email, pwd, nome,new GPS(gpsx, gpsy),nif,raio,precokm, ne+1);
                      this.data.setnEmpresas(ne+1);
 
                      if (!this.data.checkLogin(3,email,pwd)) {
