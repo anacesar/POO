@@ -6,14 +6,12 @@ public class Entidade implements Serializable {
     private String nome;
     private GPS gps;
 
-
     /**
      * Construtor parametrizado de um Entidade.
      * Aceita como parâmetros cada componente necessária.
      */
 
-    public Entidade( String nome, String email, String password, GPS gps) {
-
+    public Entidade( String email, String password, String nome, GPS gps) {
         this.email = email;
         this.password = password;
         this.nome = nome;
@@ -26,7 +24,8 @@ public class Entidade implements Serializable {
     public Entidade(String cod , String nome, GPS gps){
         this.nome=nome;
         this.email = cod + "@email.com";
-        this.password = cod.substring(1);
+        this.nome=nome;
+        this.password = cod;
         this.gps = gps;
     }
 

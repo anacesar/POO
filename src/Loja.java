@@ -5,13 +5,14 @@ import java.util.List;
 public class Loja extends Entidade implements Serializable {
     private String codLoja;
     private List<Encomenda> queue;
+    private List<Encomenda> encomendas_aceites;
 
     /**
      * Construtor parametrizado de uma Loja.
      * Aceita como parâmetros cada componente necessária.
      */
     public Loja(String codLoja, String email, String password, String nome, GPS gps, int number) {
-        super(nome, email, password, gps);
+        super(email, password, nome, gps);
         this.codLoja = "l" + number;
         this.queue = new ArrayList<>();
     }
@@ -40,6 +41,7 @@ public class Loja extends Entidade implements Serializable {
         this.codLoja = codLoja;
     }
 
+    //corrigir
     public List<Encomenda> getQueue() {
         return this.queue;
     }
