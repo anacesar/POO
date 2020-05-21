@@ -65,7 +65,7 @@ public class Data implements Serializable {
     }
 
     public int getnEncomendas() {
-        return nEncomendas;
+        return this.nEncomendas;
     }
 
     public void setnEncomendas(int nEncomendas) {

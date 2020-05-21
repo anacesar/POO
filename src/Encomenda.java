@@ -29,6 +29,10 @@ public class Encomenda {
         this.linhas = new ArrayList<>();
     }
 
+    /**
+     * Construtor parametrizado de um Voluntario.
+     * Necessário para a criação de um Voluntario através da leitura do ficheiro de logs.
+     */
     public Encomenda(String codEncomenda,String codUtilizador,String codLoja,double peso, String nif, String morada, int numero, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
         this.codEncomenda = codEncomenda;
         this.codUtilizador = codUtilizador;

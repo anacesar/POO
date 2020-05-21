@@ -9,7 +9,7 @@ public class Utilizador extends Entidade {
      * * Aceita como parâmetros cada componente necessária excepto o código de Utilizador.
      */
     public Utilizador(String email, String password, String nome, GPS gps, int number) {
-        super(email, password, nome, gps);
+        super(nome, email,password,gps);
         this.codUtilizador = "u" + number;
     }
 

@@ -5,17 +5,15 @@ import Exceptions.EmailNaoRegistadoException;
 import Exceptions.NomeInvalidoException;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Main {
 
 
     public static void main(String[] args) throws EmailJaExisteException, IOException, EmailNaoRegistadoException, NomeInvalidoException {
-        Data data= new Data();
-        Scanner scanner = new Scanner(System.in);
+
         TrazAqui app = new TrazAqui();
         DataSaver ds = new DataSaver();
-        Scanner sc = new Scanner(System.in);
+
 
         try {ds.deserializeFromXML();
         }

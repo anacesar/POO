@@ -25,7 +25,7 @@ public class Empresa extends Entidade {
      * Construtor parametrizado de um Voluntario.
      * Necessário para a criação de um Voluntario através da leitura do ficheiro de logs.
      */
-    public Empresa ( String codEmpresa,String nome, GPS gps, String nif, Double raio, Double precokm) {
+    public Empresa ( String codEmpresa,String nome, GPS gps, String nif, double raio, double precokm) {
         super(codEmpresa,nome, gps);
         this.codEmpresa=codEmpresa;
         this.nif=nif;
