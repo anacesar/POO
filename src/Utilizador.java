@@ -9,7 +9,7 @@ public class Utilizador extends Entidade {
      * * Aceita como parâmetros cada componente necessária excepto o código de Utilizador.
      */
     public Utilizador(String email, String password, String nome, GPS gps, int number) {
-        super(nome, email,password,gps);
+        super(email, password, nome,gps);
         this.codUtilizador = "u" + number;
     }
 
@@ -40,6 +40,7 @@ public class Utilizador extends Entidade {
         this.codUtilizador = codUtilizador;
     }
 
+    //preciso corrigir get e set
     public List<Encomenda> getEncomendas() {
         return this.encomendas;
     }

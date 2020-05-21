@@ -12,7 +12,7 @@ public class Empresa extends Entidade {
     private List<Encomenda> encomendas_aceites;
 
     public Empresa(String email, String password, String nome, GPS gps, String nif, double raio, double precokm, int number) {
-        super( nome,email, password, gps);
+        super(email, password, nome, gps);
         this.codEmpresa = "l" + number;
         this.classificacao = 0;
         this.raio=raio;
@@ -25,7 +25,7 @@ public class Empresa extends Entidade {
      * Construtor parametrizado de um Voluntario.
      * Necessário para a criação de um Voluntario através da leitura do ficheiro de logs.
      */
-    public Empresa ( String codEmpresa,String nome, GPS gps, String nif, double raio, double precokm) {
+    public Empresa (String codEmpresa, String nome, GPS gps, String nif, double raio, double precokm) {
         super(codEmpresa,nome, gps);
         this.codEmpresa=codEmpresa;
         this.nif=nif;
@@ -84,6 +84,7 @@ public class Empresa extends Entidade {
         this.classificacao = classificacao;
     }
 
+    //preciso corrigir
     public List<Encomenda> getEncomendas_aceites() {
         return this.encomendas_aceites;
     }

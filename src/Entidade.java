@@ -1,25 +1,21 @@
-public class Entidade {
+public class Entidade{
     private String email;
     private String password;
     private String nome;
     private GPS gps;
-    private String cod;
-
 
     /**
      * Construtor parametrizado de um Entidade.
      * Aceita como parâmetros cada componente necessária.
      */
-    public Entidade(String cod, String nome, String email, String password, GPS gps) {
-        this.cod= cod;
+    public Entidade(String email, String password, String nome, GPS gps) {
         this.email = email;
         this.password = password;
         this.nome = nome;
         this.gps = gps;
     }
 
-    public Entidade( String nome, String email, String password, GPS gps) {
-
+    public Entidade( String email, String password, String nome, GPS gps) {
         this.email = email;
         this.password = password;
         this.nome = nome;
@@ -29,11 +25,10 @@ public class Entidade {
      * Construtor parametrizado de uma Entidade.
      * Necessário para a criação das diferentes entidades através da leitura do ficheiro de logs.
      */
-    public Entidade(String cod , String nome, GPS gps){
-        this.nome=nome;
-        this.cod=cod;
+    public Entidade(String cod, String nome, GPS gps){
         this.email = cod + "@email.com";
-        this.password = cod.substring(1);
+        this.nome=nome;
+        this.password = cod;
         this.gps = gps;
     }
 
