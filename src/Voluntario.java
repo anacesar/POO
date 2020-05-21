@@ -13,7 +13,7 @@ public class Voluntario extends Entidade {
      * Aceita como parâmetros cada componente necessária.
      */
     public Voluntario(String email, String password, String nome, GPS gps, Double raio, int number) {
-        super(email, password, nome, gps);
+        super(nome,email, password, gps);
         this.codVoluntario = "v" + number;
         this.raio = raio;
         this.classificacao = 0;
@@ -25,8 +25,8 @@ public class Voluntario extends Entidade {
      * Necessário para a criação de um Voluntario através da leitura do ficheiro de logs.
      */
     public Voluntario(String codVoluntario, String nome, GPS gps, Double raio){
-        super(nome, gps);
-        this.codVoluntario = codVoluntario;
+        super(codVoluntario,nome, gps);
+        this.codVoluntario=codVoluntario;
         this.raio= raio;
         this.encomendas_aceites = new ArrayList<>();
     }

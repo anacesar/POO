@@ -29,30 +29,31 @@ public class Encomenda {
         this.linhas = new ArrayList<>();
     }
 
+    /**
+     * Construtor parametrizado de um Voluntario.
+     * Necessário para a criação de um Voluntario através da leitura do ficheiro de logs.
+     */
     public Encomenda(String codEncomenda,String codUtilizador,String codLoja,double peso, String nif, String morada, int numero, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
-        this.codEncomenda = "";
-        this.codUtilizador = "";
-        this.codLoja = "";
-        this.peso=0.0;
+        this.codEncomenda = codEncomenda;
+        this.codUtilizador = codUtilizador;
+        this.codLoja = codLoja;
+        this.peso=peso;
 
         this.nif = nif;
         this.morada = morada;
         this.numero = numero;
         this.data = data;
-        setLinhas(linhas);
+        this.linhas=linhas;
     }
 
     public Encomenda(String codEncomenda,String codUtilizador,String codLoja, double peso, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
-        this.codEncomenda = "";
-        this.codUtilizador = "";
-        this.codLoja = "";
-        this.peso=0.0;
+        this.codEncomenda = codEncomenda;
+        this.codUtilizador = codUtilizador;
+        this.codLoja = codLoja;
+        this.peso=peso;
 
-        this.nif = nif;
-        this.morada = morada;
-        this.numero = numero;
         this.data = data;
-        setLinhas(linhas);
+        this.linhas=linhas;
     }
 
     public Encomenda(Encomenda encEficiente) {
@@ -65,7 +66,7 @@ public class Encomenda {
         this.morada = encEficiente.getMorada();
         this.numero = encEficiente.getNumero();
         this.data = encEficiente.getData();
-        setLinhas(encEficiente.getLinhas());
+        this.linhas=encEficiente.getLinhas();
     }
 
     public String getCodEncomenda() {
@@ -124,10 +125,11 @@ public class Encomenda {
         return l;
     }
 
-    public void setLinhas(ArrayList<Linha_Encomenda> l) {
+    public ArrayList<Linha_Encomenda> setLinhas(ArrayList<Linha_Encomenda> l) {
         for(Linha_Encomenda le: l){
             this.linhas.add(le.clone());
         }
+        return l;
     }
 
     public Encomenda clone(){

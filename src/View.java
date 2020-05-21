@@ -36,12 +36,23 @@ public class View{
 
     }
 
-    public void menuTransportadora() {
+    public String menuTransportadora() {
         System.out.println(" -------- Área Transportadora -------");
         System.out.println("| 1 - Recolha de encomenda           |");
         System.out.println("| 2 - Registo de entrega             |");
         System.out.println("| 3 - SAIR                           |");
         System.out.println(" ------------------------------------ ");
+        return this.scanner.nextLine();
+    }
+
+    public String menuLoja() {
+        System.out.println(" ------------ Área Loja -------------");
+        System.out.println("| 1 - Sinalizar encomenda            |");
+        System.out.println("| 2 - Atualizar fila                 |");
+        System.out.println("| 3 - SAIR                           |");
+        System.out.println(" ------------------------------------ ");
+        return this.scanner.nextLine();
+
     }
 
     public String SelecionaUser() {

@@ -17,7 +17,7 @@ public class Parser {
     }
 
     public void parse() throws EmailJaExisteException, NomeInvalidoException {
-        List<String> linhas = lerFicheiro("LogsGerados.csv"); //alterar nome do ficheiro
+        List<String> linhas = lerFicheiro("logs_dados.txt"); //alterar nome do ficheiro
         String[] linhaPartida;
         for (String linha : linhas) {
             linhaPartida = linha.split(":", 2);
@@ -25,19 +25,26 @@ public class Parser {
                 case "Utilizador":
                     Utilizador u = parseUtilizador(linhaPartida[1]); // criar um Utilizador
                     if(checkUtilizador(u)) data.addUtilizador(u);
-                    System.out.println(u.toString()); //enviar para o ecrÃ¡n apenas para teste
+                   // System.out.println(u.toString()); //enviar para o ecrÃ¡n apenas para teste
                     break;
                 case "Voluntario":
                     Voluntario v = parseVoluntario(linhaPartida[1]);
                     if(checkVoluntario(v)) data.addVoluntario(v);
-                    System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
+                   // System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
                 case "Loja":
                     Loja l = parseLoja(linhaPartida[1]);
-                    System.out.println(l.toString());
+                    if(checkLoja(l)) data.addLoja(l);
+                   // System.out.println(l.toString());
+                    break;
+                case "Transportadora":
+                    Empresa t = parseEmpresa(linhaPartida[1]);
+                    if(checkEmpresa(t)) data.addEmpresa(t);
+                    // System.out.println(l.toString());
                     break;
                 case "Encomenda":
                     Encomenda e = parseEncomenda(linhaPartida[1]);
-                    System.out.println(e.toString());
+                    if(checkEncomenda(e)) data.addEncomenda(e);
+                    //System.out.println(e.toString());
                     break;
                 case "Aceite":
                   //  if(checkEncomendaAceite(linhaPartida[1])) data.add(u);
@@ -47,23 +54,16 @@ public class Parser {
             }
 
         }
-        System.out.println("done!");
+        System.out.println("Dados Carregados!");
     }
 
-    public Utilizador parseUtilizador(String input){
-        String[] campos = input.split(",");
-        String codUtilizador = campos[0];
-        String nome = campos[1];
-        double gpsx = Double.parseDouble(campos[2]);
-        double gpsy = Double.parseDouble(campos[3]);
-        return new Utilizador(codUtilizador, nome, new GPS(gpsx, gpsy));
-    }
+
 
     public boolean checkUtilizador(Utilizador utilizador) throws NomeInvalidoException {
         boolean valid = true;
 
         String codUtilizador = utilizador.getCodUtilizador();
-        if(! (codUtilizador.charAt(0) == 'u')) valid = false;
+           if(! (codUtilizador.charAt(0) == 'u')) valid = false;
         int nr =  Integer.parseInt(codUtilizador.substring(1));
         if(this.data.getnUtilizadores() < nr) data.setnUtilizadores(++nr);
 
@@ -83,6 +83,49 @@ public class Parser {
         return valid;
     }
 
+    public boolean checkLoja(Loja loja) throws NomeInvalidoException {
+        boolean valid = true;
+
+        String codLoja = loja.getCodLoja();
+        if(! (codLoja.charAt(0) == 'l')) valid = false;
+        int nr =  Integer.parseInt(codLoja.substring(1));
+        if(this.data.getnLojas() < nr) data.setnLojas(++nr);
+
+        if (loja.getNome().matches("[0-9]+")) throw new NomeInvalidoException();
+        return valid;
+    }
+
+    public boolean checkEmpresa(Empresa empresa) throws NomeInvalidoException {
+        boolean valid = true;
+
+        String codEmpresa = empresa.getCodEmpresa();
+        if(! (codEmpresa.charAt(0) == 't')) valid = false;
+        int nr =  Integer.parseInt(codEmpresa.substring(1));
+        if(this.data.getnEmpresas() < nr) data.setnEmpresas(++nr);
+
+        if (empresa.getNome().matches("[0-9]+")) throw new NomeInvalidoException();
+        return valid;
+    }
+
+    public boolean checkEncomenda(Encomenda encomenda) throws NomeInvalidoException {
+        boolean valid = true;
+
+        String codEncomenda = encomenda.getCodEncomenda();
+        if(! (codEncomenda.charAt(0) == 'e')) valid = false;  //VAI DAR TRUE TAMBEM PARA AS ACEITES
+        int nr =  Integer.parseInt(codEncomenda.substring(1));
+        if(this.data.getnEncomendas() < nr) data.setnEncomendas(++nr);
+
+        return valid;
+    }
+
+    public Utilizador parseUtilizador(String input){
+        String[] campos = input.split(",");
+        String codUtilizador = campos[0];
+        String nome = campos[1];
+        double gpsx = Double.parseDouble(campos[2]);
+        double gpsy = Double.parseDouble(campos[3]);
+        return new Utilizador(codUtilizador, nome, new GPS(gpsx, gpsy));
+    }
 
     public Voluntario parseVoluntario(String input){
         String[] campos = input.split(",");
@@ -107,6 +150,19 @@ public class Parser {
         return new Loja(codLoja, nomeLoja, new GPS(gpsx,gpsy));
     }
 
+    public Empresa parseEmpresa(String input){
+        String[] campos = input.split(",");
+        String codEmpresa = campos[0];
+        String nome = campos[1];
+        double gpsx = Double.parseDouble(campos[2]);
+        double gpsy = Double.parseDouble(campos[3]);
+        String nif = campos[4];
+        double raio= Double.parseDouble(campos[5]);
+        double precokm= Double.parseDouble(campos[6]);
+
+        return new Empresa(codEmpresa, nome, new GPS(gpsx, gpsy), nif, raio, precokm);
+    }
+
     public Encomenda parseEncomenda(String input){
         String[] campos = input.split(",");
         String codEncomenda = campos[0];
@@ -117,10 +173,11 @@ public class Parser {
         String codLoja = campos[2];
         double peso = Double.parseDouble(campos[3]);
 
-       ArrayList<Linha_Encomenda> lle = new ArrayList;
-       for(int i=4 ;campos!= null; i=i+4){
+       ArrayList<Linha_Encomenda> lle = new ArrayList<>();
+       for(int i=4 ;i<(campos.length);i=i+4){
            Linha_Encomenda le = new Linha_Encomenda(campos[i], campos[i+1], Double.parseDouble(campos[i+2]), Double.parseDouble(campos[i+3]));
            lle.add(le);
+
        }
 
         return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, LocalDate.now() , lle);
