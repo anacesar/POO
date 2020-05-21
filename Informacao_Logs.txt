@@ -1,0 +1,76 @@
+
+Caros Alunos,
+nesta mensagem são disponibilizados alguns dados para carregarem informação para o trabalho prático.
+Iremos gerar mais informação, mas este ficheiro permite-vos testar o processo de carregamento dos dados.
+
+Esta mensagem tem três items:
+
+1. Uma descrição do conteúdo e organização das linhas do ficheiro.
+Colocamos apenas a informação que nos parece básica e que se retira do enunciado.
+Cada um dos grupos poderá (deverá?) ter, na sua proposta, mais informação para as entidades. Nesses casos devem assumir valores por omissão para as variáveis de instância para as quais não fornecemos informação.
+
+
+2. Um pequeno exemplo de ficheiro, com informação de utilizadores, voluntários, empresas transportadoras, encomendas e a informação que foram tratadas pelas lojas.
+
+
+3. Um pedaço de código que podem utilizar e que lê as linhas do ficheiro e seguida faz o parsing das mesmas, e em função do tipo de informação presente chama um método que cria um objecto. A forma como o objecto é criado e a informação dos atributos do mesmo fica ao vosso critério alterar. 
+O método que faz o parse do ficheiro deverá ser invocado no programa principal.
+Por exemplo da seguinte forma:
+
+public class OMeuTrabalho {
+
+	public static void main(String[] args){
+		
+		...
+		Parser p = new Parser();
+        p.parse();
+		...
+		
+	}
+	
+}
+
+
+
+
+1. 
+
+===============================================================================
+Preambulo /Legenda
+===============================================================================
+
+--Utilizadores
+
+Utilizador:<CodUtilizador>,<Nome>,<GPS>
+
+
+--Voluntários 
+
+Voluntario:<CodVoluntário>, <Nome>,<GPS> ,<Raio> 
+
+
+--Transportadoras 
+
+Transportadora:<CodEmpresa>,<NomeEmpresa>,<GPS>,<NIF>,<raio>,<preco-por-km>
+
+
+-- Lojas
+
+Loja:<CodLoja>, <NomeLoja>
+
+
+-- Encomenda
+
+Encomenda:<CodEncomenda>, <CodUtilizador>, <CodLoja>, <Peso>, <LinhaEncomenda>+
+
+-- LinhaEncomenda
+
+<CodProduto>, <Descrição>, <Quantidade>, <ValorUnitário>
+
+
+-- Encomendas Aceites
+
+Aceite:<CodEccomenda>
+
+
+

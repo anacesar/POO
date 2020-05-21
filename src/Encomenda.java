@@ -1,9 +1,10 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Encomenda {
+public class Encomenda implements Serializable {
     private String codEncomenda;
     private String codUtilizador;
     private String codLoja;

@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.List;
 
-public class Utilizador extends Entidade {
+public class Utilizador extends Entidade implements Serializable {
     private String codUtilizador;
     private List<Encomenda> encomendas;
 

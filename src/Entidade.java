@@ -1,22 +1,16 @@
-public class Entidade {
+import java.io.Serializable;
+
+public class Entidade implements Serializable {
     private String email;
     private String password;
     private String nome;
     private GPS gps;
-    private String cod;
 
 
     /**
      * Construtor parametrizado de um Entidade.
      * Aceita como parâmetros cada componente necessária.
      */
-    public Entidade(String cod, String nome, String email, String password, GPS gps) {
-        this.cod= cod;
-        this.email = email;
-        this.password = password;
-        this.nome = nome;
-        this.gps = gps;
-    }
 
     public Entidade( String nome, String email, String password, GPS gps) {
 
@@ -31,7 +25,6 @@ public class Entidade {
      */
     public Entidade(String cod , String nome, GPS gps){
         this.nome=nome;
-        this.cod=cod;
         this.email = cod + "@email.com";
         this.password = cod.substring(1);
         this.gps = gps;

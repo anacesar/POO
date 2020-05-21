@@ -1,9 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class Empresa extends Entidade {
+public class Empresa extends Entidade implements Serializable {
     private String codEmpresa;
     private double classificacao;
     private String nif;

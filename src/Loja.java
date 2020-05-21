@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Loja extends Entidade {
+public class Loja extends Entidade implements Serializable {
     private String codLoja;
     private List<Encomenda> queue;
 
