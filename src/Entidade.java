@@ -25,7 +25,7 @@ public class Entidade implements Serializable {
         this.nome=nome;
         this.email = cod + "@email.com";
         this.nome=nome;
-        this.password = cod;
+        this.password = cod.substring(1);
         this.gps = gps;
     }
 
