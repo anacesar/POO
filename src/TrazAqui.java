@@ -111,7 +111,7 @@ public class TrazAqui {
 
         switch(op) {
             case "1":
-                this.fazerEncomenda();
+                fazerEncomenda();
                 break;
             case "2":
 
@@ -126,7 +126,7 @@ public class TrazAqui {
 
         switch(op) {
             case "1":
-                this.fazerEncomenda();
+                fazerEncomenda();
                 break;
             case "2":
 
@@ -141,7 +141,7 @@ public class TrazAqui {
 
         switch(op) {
             case "1":
-                this.fazerEncomenda();
+                fazerEncomenda();
                 break;
             case "2":
 
@@ -156,7 +156,7 @@ public class TrazAqui {
 
         switch(op) {
             case "1":
-                this.fazerEncomenda();
+                fazerEncomenda();
                 break;
             case "2":
 
