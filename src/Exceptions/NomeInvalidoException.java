@@ -1,14 +1,8 @@
-package Exceptions;
+package exceptions;
 
 public class NomeInvalidoException extends Exception{
-    public NomeInvalidoException() {
-    }
-
+    public NomeInvalidoException() { super("O nome não é válido"); }
     public NomeInvalidoException(String message) {
         super(message);
-    }
-
-    public String getMessage() {
-        return "Introduziu um nome inválido!\n";
     }
 }

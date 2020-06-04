@@ -1,14 +1,9 @@
-package Exceptions;
+package exceptions;
 
 public class EmailJaExisteException extends Exception {
-    public EmailJaExisteException() {
-    }
+    public EmailJaExisteException() { super("O email introduzido já existe!"); }
 
     public EmailJaExisteException(String message) {
         super(message);
-    }
-
-    public String getMessage() {
-        return "O email introduzido já existe!\n";
     }
 }
