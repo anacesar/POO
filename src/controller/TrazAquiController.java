@@ -1,15 +1,13 @@
 package controller;
 
-import exceptions.EmailJaExisteException;
-import exceptions.NomeInvalidoException;
-import model.Parser;
-import model.TrazAquiModel;
+import model.*;
 import view.Menu;
 import view.MenuLogin;
-
-import java.io.*;
+import exceptions.EmailJaExisteException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TrazAquiController {
     /* camada lógica */
@@ -20,7 +18,7 @@ public class TrazAquiController {
     private MenuLogin menuLogin;
 
 
-    public TrazAquiController(TrazAquiModel model){
+    public TrazAquiController(TrazAquiModel model) throws EmailJaExisteException{
         this.model = model;
 
         /* criação dos menus */
@@ -88,7 +86,7 @@ public class TrazAquiController {
     /**
      * Executa o menu principal e invoca o método correspondente à opção seleccionada.
      */
-    public void run() {
+    public void run() throws EmailJaExisteException {
         System.out.println("----------------------TrazAquiApp------------------------");
         System.out.println("nr users: " + model.nUsers());
         System.out.println("nr volu: " + model.nVolu());
@@ -204,12 +202,35 @@ public class TrazAquiController {
         try {
             carregaFicheiro(menuAdmin.leString());
         } catch(IOException | EmailJaExisteException e) {
-            System.out.println("Erro na leitura do ficheiro..");
+            System.out.println("Erro na leitura do ficheiro...");
         }
     }
 
-    private void fazerEncomenda() {
-        this.menuUtilizador.sendMessage("Indique a loja que quer efetuar a sua encomenda");
+    private void fazerEncomenda() throws EmailJaExisteException {
+
+        this.menuUtilizador.sendMessage("Indique a loja onde quer efetuar a sua encomenda: ");
+        for(Loja l: this.model.getMLoja().values()){
+            if (l.getNome().equals( menuUtilizador.leString())){
+
+                this.menuUtilizador.sendMessage("Faça a sua encomenda: ");
+                String input=menuUtilizador.leString();
+                String[] campos = input.split(",");
+                ArrayList<Linha_Encomenda> lle = new ArrayList<>();
+                for(int i=0 ;i<(campos.length);i=i+4){
+                    Linha_Encomenda le = new Linha_Encomenda(campos[i], campos[i+1], Double.parseDouble(campos[i+2]), Double.parseDouble(campos[i+3]));
+                    lle.add(le);
+                }
+                this.menuUtilizador.sendMessage("Morada para qual pretende receber a encomenda: ");
+                String morada = menuUtilizador.leString();
+                Encomenda e = new Encomenda("e"+(this.model.getnEncomendas()+1), this.model.getMUtilizador().get(menuLogin.getEmail()).getCodUtilizador(),l.getCodLoja(),0.0, morada, LocalDate.now(),lle);
+                this.model.addEncomenda(e);
+                this.model.getLoja(l.getEmail()).getQueue().add(e);
+            }
+            else this.menuAdmin.sendMessage("Nome de Loja inválido...");
+        }
+
+
+
 
     }
 

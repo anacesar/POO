@@ -17,7 +17,6 @@ public class Encomenda implements Serializable {
     private String nif;
     private String morada;
 
-    private int numero;   // ?
     private LocalDate data;
     private List<Linha_Encomenda> linhas;
 
@@ -31,9 +30,7 @@ public class Encomenda implements Serializable {
         this.codLoja = "";
         this.peso=0.0;
 
-        this.nif = "";
         this.morada = "";
-        this.numero = 0;
         this.data = LocalDate.now();
         this.linhas = new ArrayList<>();
 
@@ -42,15 +39,13 @@ public class Encomenda implements Serializable {
     }
 
 
-    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, String nif, String morada, int numero, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
+    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, String morada,LocalDate data, ArrayList<Linha_Encomenda> linhas) {
         this.codEncomenda = codEncomenda;
         this.codUtilizador = codUtilizador;
         this.codLoja = codLoja;
         this.peso=peso;
 
-        this.nif = nif;
         this.morada = morada;
-        this.numero = numero;
         this.data = data;
         this.linhas=linhas;
 
@@ -81,9 +76,7 @@ public class Encomenda implements Serializable {
         this.codLoja = encomenda.getCodLoja();
         this.peso= encomenda.getPeso();
 
-        this.nif = encomenda.getNif();
         this.morada = encomenda.getMorada();
-        this.numero = encomenda.getNumero();
         this.data = encomenda.getData();
         this.linhas=encomenda.getLinhas();
         this.tempo = encomenda.getTempo();
@@ -122,17 +115,10 @@ public class Encomenda implements Serializable {
         this.peso = peso;
     }
 
-    public String getNif() {return this.nif;}
-
-    public void setNif(String nif) {this.nif = nif;}
 
     public String getMorada() {return this.morada;}
 
     public void setMorada(String morada) {this.morada = morada;}
-
-    public int getNumero() {return this.numero;}
-
-    public void setNumero(int numero) {this.numero = numero;}
 
     public LocalDate getData() {return this.data;}
 

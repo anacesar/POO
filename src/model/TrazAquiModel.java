@@ -165,6 +165,23 @@ public class TrazAquiModel implements Serializable{
 
     public Encomenda getEncomenda(String cod) {return this.encomendas.get(cod);}
 
+    public Map<String, Encomenda> getMEncomenda() {
+        Map<String,Encomenda> ne = new HashMap<>();
+        encomendas.forEach((key,value)->ne.put(key,value.clone()));
+        return ne;
+    }
+
+    public Map<String, Loja> getMLoja() {
+        Map<String,Loja> nl = new HashMap<>();
+        lojas.forEach((key,value)->nl.put(key,value.clone()));
+        return nl;
+    }
+
+    public Map<String, Utilizador> getMUtilizador() {
+        Map<String,Utilizador> nu = new HashMap<>();
+        utilizadores.forEach((key,value)->nu.put(key,value.clone()));
+        return nu;
+    }
 
     public int nUsers() {
         return utilizadores.size();
