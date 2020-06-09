@@ -22,6 +22,7 @@ public class Menu implements Serializable {
         this.op = 0;
     }
 
+
     public void executa() {
         do {
             showMenu();
@@ -31,10 +32,12 @@ public class Menu implements Serializable {
 
     public void showMenu(){
         System.out.println("\n Selecionar opção:");
-        for (int i=0; i<this.opcoes.size(); i++){
-            System.out.print(i+1);
-            System.out.print(" - ");
-            System.out.println(this.opcoes.get(i));
+        if(this.opcoes!=null) {
+            for (int i = 0; i < this.opcoes.size(); i++) {
+                System.out.print(i + 1);
+                System.out.print(" - ");
+                System.out.println(this.opcoes.get(i));
+            }
         }
         System.out.println("0 - Sair");
     }
@@ -49,9 +52,9 @@ public class Menu implements Serializable {
         catch (InputMismatchException e){
             op = -1;
         }
-
-        if (op < 0 || op > this.opcoes.size()) op = -1;
-
+        if (this.opcoes!=null) {
+            if (op < 0 || op > this.opcoes.size()) op = -1;
+        }
         return op;
     }
 

@@ -3,10 +3,7 @@ package model;
 import exceptions.EmailJaExisteException;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TrazAquiModel implements Serializable{
@@ -153,9 +150,17 @@ public class TrazAquiModel implements Serializable{
 
     public void addEncomendaAceite(String codEncomenda) {
         if(encomendas.containsKey(codEncomenda)) {
-            lojas.get(encomendas.get(codEncomenda).getCodLoja()).addToAceites(encomendas.get(codEncomenda));
-
-        }
+            Encomenda e = getEncomendaC(codEncomenda);
+            Loja l=getLojaC(e.getCodLoja());
+            l.getEncomendas_aceites().add(e);
+                for(int j = 0; j < l.getQueue().size(); j++) {
+                    Encomenda r =l.getQueue().get(j);
+                    if (r.getCodEncomenda().equals(codEncomenda)){
+                        l.getQueue().remove(j);
+                        break;
+                    }
+                }
+            }
     }
 
     public void available(int tipo, String email, boolean state){
@@ -166,6 +171,39 @@ public class TrazAquiModel implements Serializable{
     public void availableToMed(int tipo, String email, boolean state){
         if(tipo == 3) this.voluntarios.get(email).aceitaMedicamentos(state);
         else this.empresas.get(email).aceitaMedicamentos(state);
+    }
+
+    public Voluntario temVoluntario(String codLoja, Utilizador u){
+        GPS localizacao_loja = getLojaC(codLoja).getGps();
+        GPS localizacao_u = u.getGps();
+        double dist = localizacao_loja.distancia(localizacao_u);
+        for (Voluntario v : voluntarios.values()){
+            if(!(dist>v.getRaio()) && v.isDisponivel()) return v;
+        }
+        return null;
+
+    }
+
+    public  List<Empresa> empresasDisponiveis(String codLoja, Utilizador u){
+        List<Empresa> empresas_possiveis= new ArrayList<>();
+        GPS localizacao_loja = getLojaC(codLoja).getGps();
+        GPS localizacao_u = u.getGps();
+        double dist = localizacao_loja.distancia(localizacao_u);
+        for (Empresa e : empresas.values()){
+            if(!(dist>e.getRaio()) && e.isDisponivel()) empresas_possiveis.add(e);
+        }
+        return null;
+    }
+
+    public  List<String> empresasDS(String codLoja, Utilizador u){
+        List<String> empresas_possiveis= new ArrayList<>();
+        GPS localizacao_loja = getLojaC(codLoja).getGps();
+        GPS localizacao_u = u.getGps();
+        double dist = localizacao_loja.distancia(localizacao_u);
+        for (Empresa e : empresas.values()){
+            if(!(dist>e.getRaio()) && e.isDisponivel()) empresas_possiveis.add(e.toString());
+        }
+        return null;
     }
 
     public List<String> encomendas_por_sinalizar(int tipo, String email){

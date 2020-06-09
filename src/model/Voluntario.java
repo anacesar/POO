@@ -76,10 +76,6 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         this.raio = raio;
     }
 
-    public boolean getDisponivel() { return this.disponivel; }
-
-    public void setDisponivel(boolean disponivel) { this.disponivel = disponivel; }
-
     public List<Encomenda> getEncomendas_entregues() { return this.encomendas_entregues.stream().map(Encomenda::clone).collect(Collectors.toList()); }
 
     public void setEncomendas_entregues(List<Encomenda> encomendas) { this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
@@ -87,6 +83,20 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
     public List<Encomenda> getEncomendas_por_sinalizar() { return this.encomendas_por_sinalizar.stream().map(Encomenda::clone).collect(Collectors.toList()); }
 
     public void setEncomendas_por_sinalizar(List<Encomenda> encomendas) { this.encomendas_por_sinalizar = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) { this.disponivel = disponivel; }
+
+    public boolean isLicenca() {
+        return licenca;
+    }
+
+    public void setLicenca(boolean licenca) {
+        this.licenca = licenca;
+    }
 
     public void addClassificacao(double cl) {
         this.classificacao = (this.classificacao + cl) /2;
@@ -106,5 +116,21 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         this.encomendas_entregues.add(encomenda);
     }
 
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\nNome: ").append(this.getNome());
+        sb.append("\nEmail: ").append(this.getEmail());
+        sb.append("\nMorada: ").append(this.getGps());
+        sb.append("\nRaio de ação: ").append(this.getRaio());
+        sb.append("\nClassificação: ").append(this.getClassificacao());
+
+
+        sb.append("\nLicença: ").append(this.isLicenca());
+        sb.append("\nDisponiblidade: ").append(this.isDisponivel());
+
+
+        return sb.toString();
+    }
 
 }

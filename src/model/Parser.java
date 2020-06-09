@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class Parser {
                     //System.out.println(e.toString());
                     break;
                 case "Aceite":
-                    String ea = linhaPartida[0];
+                    String ea = linhaPartida[1];
                     model.addEncomendaAceite(ea);
                     break;
                 default:

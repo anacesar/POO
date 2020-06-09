@@ -67,8 +67,8 @@ public class Loja extends Entidade implements Serializable {
         this.queue.add(e);
     }
 
-    public void addToAceites(Encomenda e){
-        this.queue.remove(e);
+    public void addToAceites(int index){
+        Encomenda e = this.queue.remove(index);
         this.encomendas_aceites.add(e);
     }
 

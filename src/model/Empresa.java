@@ -99,6 +99,14 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
 
     public void setDisponivel(boolean disponivel) { this.disponivel = disponivel; }
 
+    public boolean isLicenca() {
+        return licenca;
+    }
+
+    public void setLicenca(boolean licenca) {
+        this.licenca = licenca;
+    }
+
     //preciso corrigir
     public List<Encomenda> getEncomendas_entregues() {
         return this.encomendas_entregues.stream().map(Encomenda::clone).collect(Collectors.toList());
@@ -146,6 +154,10 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         sb.append("\nLocalização: ").append(this.getGps());
         sb.append("\nRaio de ação: ").append(this.getRaio());
         sb.append("\nClassificação: ").append(this.getClassificacao());
+
+        sb.append("\nLicença: ").append(this.isLicenca());
+        sb.append("\nDisponiblidade: ").append(this.isDisponivel());
+
         return sb.toString();
     }
 }
