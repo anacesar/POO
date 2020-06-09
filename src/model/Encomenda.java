@@ -1,7 +1,7 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,12 +13,13 @@ public class Encomenda implements Serializable {
     private String codUtilizador;
     private String codLoja;
     private double peso;
-    private GPS morada;
-
-    private LocalDate data;
     private List<Linha_Encomenda> linhas;
 
+    private boolean entregue;
+
     /* após entrega da encomenda */
+    private LocalDateTime data_entrega;
+    private boolean classificada;
     private double tempo; //tempo que demorou a entrega da encomenda
     private double preco; //preco associado a entrega
 
@@ -27,26 +28,28 @@ public class Encomenda implements Serializable {
         this.codUtilizador = "";
         this.codLoja = "";
         this.peso=0.0;
-
-        this.morada = new GPS();
-        this.data = LocalDate.now();
         this.linhas = new ArrayList<>();
 
+        this.entregue = false;
+
+        this.data_entrega = null;
+        this.classificada = false;
         this.tempo = 0;
         this.preco = 0;
     }
 
 
-    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, GPS morada,LocalDate data, ArrayList<Linha_Encomenda> linhas) {
+    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, ArrayList<Linha_Encomenda> linhas) {
         this.codEncomenda = codEncomenda;
         this.codUtilizador = codUtilizador;
         this.codLoja = codLoja;
         this.peso=peso;
-
-        this.morada = morada;
-        this.data = data;
         this.linhas=linhas;
 
+        this.entregue = false;
+
+        this.data_entrega = null;
+        this.classificada = false;
         this.tempo = 0;
         this.preco = 0;
     }
@@ -55,15 +58,17 @@ public class Encomenda implements Serializable {
      * Construtor parametrizado de uma encomenda.
      * Necessário para a criação de um Encomenda através da leitura do ficheiro de logs.
      */
-    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
+    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, ArrayList<Linha_Encomenda> linhas) {
         this.codEncomenda = codEncomenda;
         this.codUtilizador = codUtilizador;
         this.codLoja = codLoja;
         this.peso=peso;
-
-        this.data = data;
         this.linhas=linhas;
 
+        this.entregue = false;
+
+        this.data_entrega = null;
+        this.classificada = false;
         this.tempo = 0;
         this.preco = 0;
     }
@@ -73,10 +78,9 @@ public class Encomenda implements Serializable {
         this.codUtilizador = encomenda.getCodUtilizador();
         this.codLoja = encomenda.getCodLoja();
         this.peso= encomenda.getPeso();
-
-        this.morada = encomenda.getMorada();
-        this.data = encomenda.getData();
         this.linhas=encomenda.getLinhas();
+        this.data_entrega = encomenda.getData();
+        this.classificada = encomenda.isClassificada();
         this.tempo = encomenda.getTempo();
         this.preco = encomenda.getPreco();
     }
@@ -113,20 +117,19 @@ public class Encomenda implements Serializable {
         this.peso = peso;
     }
 
+    public LocalDateTime getData() {return this.data_entrega;}
 
-    public GPS getMorada() {return this.morada;}
+    public void setData(LocalDateTime data) {this.data_entrega = data;}
 
-    public void setMorada(GPS gps) {this.morada= gps;}
+    public boolean isClassificada() { return this.classificada; }
 
-    public LocalDate getData() {return this.data;}
-
-    public void setData(LocalDate data) {this.data = data;}
+    public void setClassificada(boolean classificada) { this.classificada = classificada; }
 
     public ArrayList<Linha_Encomenda> getLinhas() {
         return this.linhas.stream().map(Linha_Encomenda::clone).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public void setLinhas(ArrayList<Linha_Encomenda> l){
+    public void setLinhas(List<Linha_Encomenda> l){
         this.linhas = l.stream().map(Linha_Encomenda::clone).collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -143,14 +146,7 @@ public class Encomenda implements Serializable {
     }
 
     public double calculaValorTotal(){
-        double res= 0;
-        Iterator<Linha_Encomenda> it = linhas.iterator();
-        Linha_Encomenda l;
-        while(it.hasNext()){
-            l = it.next();
-            res+= l.calculaValorLinhaEnc();
-        }
-        return res;
+        return this.linhas.stream().mapToDouble(Linha_Encomenda::calculaValorLinhaEnc).sum();
     }
 
     public int numeroTotalProdutos(){
@@ -171,31 +167,19 @@ public class Encomenda implements Serializable {
         return found;
     }
 
-    public void adicionaLinha(Linha_Encomenda linha){
-        this.linhas.add(linha);
-    }
-
-    public void removeProduto(String codProd){
-        Iterator<Linha_Encomenda> it = linhas.iterator();
-        Linha_Encomenda l;
-        while(it.hasNext()){
-            l = it.next();
-            if(codProd.compareTo(l.getCodProduto())==0) it.remove();
-        }
-    }
-
     public String toString(){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\nData: ").append(this.data);
-        sb.append("\nUtilizador: ").append(this.codUtilizador);
-        sb.append("\nMorada: ").append(this.morada);
-        sb.append("\n\nCódigo da encomenda: ").append(this.codEncomenda);
+        sb.append("\nCod Encomenda: ").append(this.codEncomenda);
         sb.append("\nCódigo da Loja: ").append(this.codLoja);
         sb.append("\nPeso: ").append(this.peso);
-        sb.append("\nEncomenda: ").append(this.linhas);
+        sb.append("\nLinhas: ");
+
+        this.linhas.stream().forEach(linha -> sb.append(linha.toString()).append("\n"));
 
         return sb.toString();
     }
+
+
 
 }

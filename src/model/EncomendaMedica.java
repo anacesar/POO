@@ -9,7 +9,7 @@ public class EncomendaMedica extends Encomenda {
         super();
     }
 
-    public EncomendaMedica(String codEncomenda, String codUtilizador, String codLoja, double peso, LocalDate data, ArrayList<Linha_Encomenda> linhas) {
-        super(codEncomenda,codUtilizador,codLoja,peso,data,linhas);
+    public EncomendaMedica(String codEncomenda, String codUtilizador, String codLoja, double peso, ArrayList<Linha_Encomenda> linhas) {
+        super(codEncomenda,codUtilizador,codLoja,peso,linhas);
     }
 }

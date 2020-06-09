@@ -143,7 +143,11 @@ public class TrazAquiModel implements Serializable{
     public void addEncomenda(Encomenda encomenda)  {
         if(!encomendas.containsKey(encomenda.getCodEncomenda())) {
             encomendas.put(encomenda.getCodEncomenda(), encomenda.clone());
-
+            Utilizador u = getUtilizadorC(encomenda.getCodUtilizador());
+            Loja l = getLojaC(encomenda.getCodLoja());
+            if(u == null || l == null) return;
+            u.addToEntrega(encomenda);
+            l.addToQueue(encomenda);
         }
     }
 
@@ -184,6 +188,41 @@ public class TrazAquiModel implements Serializable{
 
     public Encomenda getEncomenda(String cod) {return this.encomendas.get(cod);}
 
+    public Utilizador getUtilizadorC(String codUtilizador){
+        for(Utilizador u : this.utilizadores.values()){
+            if(u.getCodUtilizador().equals(codUtilizador)) return u;
+        }
+        return null;
+    }
+
+    public Voluntario getVoluntarioC(String codVoluntario){
+        for(Voluntario v : this.voluntarios.values()){
+            if(v.getCodVoluntario().equals(codVoluntario)) return v;
+        }
+        return null;
+    }
+
+    public Loja getLojaC(String codLoja){
+        for(Loja l : this.lojas.values()){
+            if(l.getCodLoja().equals(codLoja)) return l;
+        }
+        return null;
+    }
+
+    public Empresa getEmpresaC(String codEmpresa){
+        for(Empresa e : this.empresas.values()){
+            if(e.getCodEmpresa().equals(codEmpresa)) return e;
+        }
+        return null;
+    }
+
+    public Encomenda getEncomendaC(String codEncomenda){
+        for(Encomenda e : this.encomendas.values()){
+            if(e.getCodEncomenda().equals(codEncomenda)) return e;
+        }
+        return null;
+    }
+
     public Map<String, Encomenda> getMEncomenda() {
         Map<String,Encomenda> ne = new HashMap<>();
         encomendas.forEach((key,value)->ne.put(key,value.clone()));
@@ -214,4 +253,10 @@ public class TrazAquiModel implements Serializable{
     public int nLojas() {
         return lojas.size();
     }
+
+
+    public int nEncomendas() {
+        return encomendas.size();
+    }
+
 }

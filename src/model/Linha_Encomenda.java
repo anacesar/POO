@@ -62,9 +62,7 @@ public class Linha_Encomenda implements Serializable {
         this.preco = preco;
     }
 
-    public double calculaValorLinhaEnc(){
-        return this.preco * this.quantidade;
-    }
+    public double calculaValorLinhaEnc(){ return this.preco * this.quantidade; }
 
     public Linha_Encomenda clone(){
         return new Linha_Encomenda(this);
@@ -82,10 +80,9 @@ public class Linha_Encomenda implements Serializable {
 
     @Override
     public String toString() {
-        return "\nLinha_Encomenda{" +
-                "CodProduto='" + this.codProduto + '\'' +
-                ", Descricao='" + this.descricao + '\'' +
+        return  "CodProduto= " + this.codProduto +
+                ", Descricao= " + this.descricao +
                 ", Preco=" + this.preco +
-                ", Quantidade=" + this.quantidade + '}';
+                ", Quantidade=" + this.quantidade;
     }
 }

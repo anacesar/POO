@@ -19,7 +19,7 @@ public class TrazAquiController {
     private MenuLogin menuLogin;
 
 
-    public TrazAquiController(TrazAquiModel model) throws EmailJaExisteException{
+    public TrazAquiController(TrazAquiModel model){
         this.model = model;
 
         /* criação dos menus */
@@ -87,11 +87,12 @@ public class TrazAquiController {
     /**
      * Executa o menu principal e invoca o método correspondente à opção seleccionada.
      */
-    public void run() throws EmailJaExisteException {
+    public void run(){
         System.out.println("----------------------TrazAquiApp------------------------");
         System.out.println("nr users: " + model.nUsers());
         System.out.println("nr volu: " + model.nVolu());
         System.out.println("nr lojas: " + model.nLojas());
+        System.out.println("nr encomendas: " + model.nEncomendas());
 
 
         do {
@@ -270,7 +271,7 @@ public class TrazAquiController {
         }
     }
 
-    private void fazerEncomenda(String email) throws EmailJaExisteException {
+    private void fazerEncomenda(String email){
 
         this.menuUtilizador.sendMessage("Indique a loja onde quer efetuar a sua encomenda: ");
         String res= menuUtilizador.leString();
@@ -284,16 +285,9 @@ public class TrazAquiController {
                     Linha_Encomenda le = new Linha_Encomenda(campos[i], campos[i+1], Double.parseDouble(campos[i+2]), Double.parseDouble(campos[i+3]));
                     lle.add(le);
                 }
-                double cordx,cordy;
-                this.menuUtilizador.sendMessage("Morada para qual pretende receber a encomenda: ");
-                this.menuUtilizador.sendMessage("Cordx: ");
-                cordx = this.menuUtilizador.lerDouble();
-                this.menuUtilizador.sendMessage("Cordy: ");
-                cordy = this.menuUtilizador.lerDouble();
-                GPS morada =new GPS(cordx,cordy);
-                Encomenda e = new Encomenda("e"+(this.model.getnEncomendas()+1), this.model.getMUtilizador().get(email).getCodUtilizador(),l.getCodLoja(),0.0, morada, LocalDate.now(),lle);
-
-                this.model.addEncomenda(e);
+                int nEncomenda = this.model.getnEncomendas() +1;
+                Encomenda e = new Encomenda("e"+nEncomenda, this.model.getMUtilizador().get(email).getCodUtilizador(),l.getCodLoja(),0.0, lle);
+                this.model.setnEncomendas(nEncomenda);
                 this.model.getLoja(l.getEmail()).addToQueue(e);
                 this.menuUtilizador.sendMessage(e.toString());
             }
@@ -301,9 +295,9 @@ public class TrazAquiController {
         }
     }
 
-    private void encomendasEntrega(String email){
-        this.menuUtilizador.sendMessage(String.valueOf(this.model.getUtilizador(email).getEncomendasEntrega()));
 
+    private void encomendasEntrega(String email){
+        this.model.getUtilizador(email).getEncomendasEntrega().stream().forEach(encomenda -> this.menuVoluntario.sendMessage(encomenda.toString()));
     }
 
     private void minhasEncomendas(String email){

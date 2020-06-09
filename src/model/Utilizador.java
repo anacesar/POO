@@ -68,8 +68,13 @@ public class Utilizador extends Entidade implements Serializable {
         this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
 
-    public void addToEntrega (Encomenda e){
+    public void addToEntrega(Encomenda e){
         this.encomendas_para_entrega.add(e);
+    }
+
+    public void encomendaEntregue(Encomenda encomenda){
+        this.encomendas_para_entrega.remove(encomenda);
+        this.encomendas_entregues.add(encomenda);
     }
 
     public String toString(){

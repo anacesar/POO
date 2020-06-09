@@ -17,6 +17,8 @@ public class Parser {
         this.model = new_model;
     }
 
+    public Parser() {this.model = null; }
+
 
     public List<String> lerFicheiro(String nomeFich) throws IOException {
         List<String> lines;
@@ -179,7 +181,6 @@ public class Parser {
             lle.add(le);
         }
 
-        return new Encomenda( codEncomenda, codUtilizador, codLoja, peso, LocalDate.now() , lle);
-
+        return new Encomenda(codEncomenda, codUtilizador, codLoja, peso , lle);
     }
 }
