@@ -19,6 +19,7 @@ public class Menu implements Serializable {
 
     public Menu(List<String> opcoes){
         this.opcoes = opcoes;
+
         this.op = 0;
     }
 

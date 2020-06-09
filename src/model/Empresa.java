@@ -137,4 +137,15 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         encomenda.setPreco(price);
         this.encomendas_entregues.add(encomenda);
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nNome: ").append(this.getNome());
+        sb.append("\nEmail: ").append(this.getEmail());
+        sb.append("\nNIF: ").append(this.getNif());
+        sb.append("\nLocalização: ").append(this.getGps());
+        sb.append("\nRaio de ação: ").append(this.getRaio());
+        sb.append("\nClassificação: ").append(this.getClassificacao());
+        return sb.toString();
+    }
 }

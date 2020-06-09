@@ -58,9 +58,8 @@ public class Parser {
                     //System.out.println(e.toString());
                     break;
                 case "Aceite":
-                    Encomenda ea = parseEncomenda(linhaPartida[1]);
-                    if (checkEncomenda(ea)) model.addEncomendaAceite(ea);
-                    //if(checkEncomendaAceite(linhaPartida[1])) model.add(u);
+                    String ea = linhaPartida[0];
+                    model.addEncomendaAceite(ea);
                     break;
                 default:
                     System.out.println("Linha inválida.");

@@ -75,9 +75,9 @@ public class Utilizador extends Entidade implements Serializable {
     public String toString(){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\nEmail: ").append(getEmail());
-        sb.append("\nNome: ").append(getNome());
-        sb.append("\nMorada: ").append(getGps());
+        sb.append("\nEmail: ").append(this.getEmail());
+        sb.append("\nNome: ").append(this.getNome());
+        sb.append("\nMorada: ").append(this.getGps());
 
         return sb.toString();
     }

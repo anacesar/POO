@@ -1,9 +1,10 @@
 package controller;
 
+import exceptions.EmailJaExisteException;
 import model.*;
 import view.Menu;
 import view.MenuLogin;
-import exceptions.EmailJaExisteException;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -48,11 +49,11 @@ public class TrazAquiController {
                 "Consultar encomendas que transportei",
                 "Ver minha informação pessoal"};
         String[] loja = {"Registar encomenda pronta para entrega",
-                "Registar fila",
                 "Consultar histórico de encomendas",
                 "Ver minha informação pessoal"};
         String[] empresa = {"Sinalizar disponiblidade",
                 "Registar tempo de entrega de uma encomenda e custo associado",
+                "Licença para entregar encomendas médicas",
                 "Consultar encomendas transportadas",
                 "Ver minha informação pessoal"};
         String[] aux = {};
@@ -174,6 +175,49 @@ public class TrazAquiController {
                                     }
                                 }while(this.menuVoluntario.getOp()!=0);
                                 break;
+                            /* loja is logged */
+                            case 4:
+                                do{
+                                    String lEmail=this.menuLogin.getEmail();
+                                    this.menuLoja.executa();
+                                    switch(this.menuLoja.getOp()){
+                                        case 1: /* Registar encomenda pronta para entrega */
+                                            readyToentrega(lEmail);
+                                            break;
+                                        case 2: /*Consultar histórico de encomendas */
+                                            this.menuLoja.sendMessage(String.valueOf(this.model.getLoja(lEmail).getEncomendas_aceites()));
+                                            break;
+                                        case 3: /*Ver minha informação pessoal*/
+                                            this.menuLoja.sendMessage(this.model.getLoja(lEmail).toString());
+                                            break;
+
+                                    }
+                                }while(this.menuLoja.getOp()!=0);
+                                break;
+                            /* empresa is logged */
+                            case 5:
+                                do{
+                                    String eEmail = this.menuLogin.getEmail();
+                                    this.menuEmpresa.executa();
+                                    switch(this.menuEmpresa.getOp()) {
+                                        case 1: /* Sinalizar disponibilidade */
+                                            disponibilidade(this.menuLogin.getOp(), eEmail);
+                                            break;
+                                        case 2: /* Registar tempo de entrega de uma encomenda e custo */
+                                            tempo_entega(this.menuLogin.getOp(), eEmail);
+                                            break;
+                                        case 3: /*Licença para entregar encomendas médicas */
+                                            licenca(this.menuLogin.getOp(), eEmail);
+                                            break;
+                                        case 4: /*Consultar encomendas que transportei*/
+                                            this.menuEmpresa.sendMessage(String.valueOf(this.model.getEmpresa(eEmail).getEncomendas_entregues()));
+                                            break;
+                                        case 5: /*Ver a minha informação pessoal*/
+                                            this.menuEmpresa.sendMessage(this.model.getEmpresa(eEmail).toString());
+                                            break;
+                                    }
+                                }while(this.menuEmpresa.getOp()!=0);
+                                break;
                             default:
                                 break;
                         }
@@ -291,6 +335,18 @@ public class TrazAquiController {
                 this.model.getVoluntario(email).sinalizarEncomenda(encomenda -1, time);
             }
         }while(auxiliar.getOp()!= 0);
+    }
+
+    public void readyToentrega(String lEmail){
+        Menu auxiliar = new Menu(this.model.toEntrega(lEmail));
+        auxiliar.sendMessage("Escolha a encomenda pelo código: ");
+        do{
+            auxiliar.executa();
+            if(auxiliar.getOp()== 0) break;
+            int encomenda = auxiliar.getOp();
+            this.model.getLoja(lEmail).addToAceites(this.model.getEncomenda(String.valueOf(encomenda-1)));
+        }while(auxiliar.getOp()!= 0);
+
     }
 
     public void licenca(int op, String email){

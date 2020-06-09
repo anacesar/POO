@@ -107,10 +107,10 @@ public class TrazAquiModel implements Serializable{
                 if(this.voluntarios.containsKey(email) && this.voluntarios.get(email).getPassword().equals(password)) valid = true;
                 break;
             case 4:
-                if(this.empresas.containsKey(email) && this.empresas.get(email).getPassword().equals(password)) valid = true;
+                if(this.lojas.containsKey(email) && this.lojas.get(email).getPassword().equals(password)) valid = true;
                 break;
             case 5:
-                if(this.lojas.containsKey(email) && this.lojas.get(email).getPassword().equals(password)) valid = true;
+                if(this.empresas.containsKey(email) && this.empresas.get(email).getPassword().equals(password)) valid = true;
                 break;
             default:
                 break;
@@ -147,9 +147,9 @@ public class TrazAquiModel implements Serializable{
         }
     }
 
-    public void addEncomendaAceite(Encomenda encomenda) {
-        if(encomendas.containsKey(encomenda.getCodEncomenda())) {
-            lojas.get(encomenda.getCodLoja());
+    public void addEncomendaAceite(String codEncomenda) {
+        if(encomendas.containsKey(codEncomenda)) {
+            lojas.get(encomendas.get(codEncomenda).getCodLoja()).addToAceites(encomendas.get(codEncomenda));
 
         }
     }
@@ -165,8 +165,13 @@ public class TrazAquiModel implements Serializable{
     }
 
     public List<String> encomendas_por_sinalizar(int tipo, String email){
+
         if(tipo == 3) return this.voluntarios.get(email).getEncomendas_por_sinalizar().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
         else return this.empresas.get(email).getEncomendas_sinalizar().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
+    }
+
+    public List<String> toEntrega(String lEmail){
+       return this.lojas.get(lEmail).getQueue().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
     }
 
     public Utilizador getUtilizador(String email){ return this.utilizadores.get(email); }

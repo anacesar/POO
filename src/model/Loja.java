@@ -13,7 +13,7 @@ public class Loja extends Entidade implements Serializable {
      * Construtor parametrizado de uma Loja.
      * Aceita como parâmetros cada componente necessária.
      */
-    public Loja(String codLoja, String email, String password, String nome, GPS gps, int number) {
+    public Loja( String email, String password, String nome, GPS gps, int number) {
         super(email, password, nome, gps);
         this.codLoja = "l" + number;
         this.queue = new ArrayList<>();
@@ -47,6 +47,13 @@ public class Loja extends Entidade implements Serializable {
         this.codLoja = codLoja;
     }
 
+    public List<Encomenda> getEncomendas_aceites() {
+        return encomendas_aceites;
+    }
+
+    public void setEncomendas_aceites(List<Encomenda> encomendas_aceites) {
+        this.encomendas_aceites = encomendas_aceites;
+    }
 
     public List<Encomenda> getQueue() {
         return this.queue;
@@ -59,7 +66,24 @@ public class Loja extends Entidade implements Serializable {
     public void addToQueue (Encomenda e){
         this.queue.add(e);
     }
+
+    public void addToAceites(Encomenda e){
+        this.queue.remove(e);
+        this.encomendas_aceites.add(e);
+    }
+
     public Loja clone() {
         return new Loja(this);
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\nNome: ").append(getNome());
+        sb.append("\nEmail: ").append(getEmail());
+        sb.append("\nLocalização: ").append(getGps());
+
+        return sb.toString();
+    }
+
 }
