@@ -82,7 +82,7 @@ public class Linha_Encomenda implements Serializable {
 
     @Override
     public String toString() {
-        return "Linha_Encomenda{" +
+        return "\nLinha_Encomenda{" +
                 "CodProduto='" + this.codProduto + '\'' +
                 ", Descricao='" + this.descricao + '\'' +
                 ", Preco=" + this.preco +

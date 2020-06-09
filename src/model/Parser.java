@@ -2,14 +2,13 @@ package model;
 
 import exceptions.EmailJaExisteException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.*;
 
 public class Parser {
     private TrazAquiModel model;
@@ -59,6 +58,8 @@ public class Parser {
                     //System.out.println(e.toString());
                     break;
                 case "Aceite":
+                    Encomenda ea = parseEncomenda(linhaPartida[1]);
+                    if (checkEncomenda(ea)) model.addEncomendaAceite(ea);
                     //if(checkEncomendaAceite(linhaPartida[1])) model.add(u);
                     break;
                 default:

@@ -17,6 +17,7 @@ public class Loja extends Entidade implements Serializable {
         super(email, password, nome, gps);
         this.codLoja = "l" + number;
         this.queue = new ArrayList<>();
+        this.encomendas_aceites= new ArrayList<>();
     }
 
     /**
@@ -27,11 +28,14 @@ public class Loja extends Entidade implements Serializable {
         super(codLoja,nome, gps);
         this.codLoja=codLoja;
         this.queue = new ArrayList<>();
+        this.encomendas_aceites= new ArrayList<>();
     }
 
     public Loja(Loja loja) {
         super(loja.getEmail(), loja.getPassword(), loja.getNome(), loja.getGps());
         this.codLoja = loja.getCodLoja();
+        this.queue = new ArrayList<>();
+        this.encomendas_aceites= new ArrayList<>();
     }
 
 
@@ -43,7 +47,7 @@ public class Loja extends Entidade implements Serializable {
         this.codLoja = codLoja;
     }
 
-    //corrigir
+
     public List<Encomenda> getQueue() {
         return this.queue;
     }
@@ -52,6 +56,9 @@ public class Loja extends Entidade implements Serializable {
         this.queue = queue;
     }
 
+    public void addToQueue (Encomenda e){
+        this.queue.add(e);
+    }
     public Loja clone() {
         return new Loja(this);
     }

@@ -3,7 +3,6 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Utilizador extends Entidade implements Serializable {
@@ -69,8 +68,22 @@ public class Utilizador extends Entidade implements Serializable {
         this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
 
+    public void addToEntrega (Encomenda e){
+        this.encomendas_para_entrega.add(e);
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\nEmail: ").append(getEmail());
+        sb.append("\nNome: ").append(getNome());
+        sb.append("\nMorada: ").append(getGps());
+
+        return sb.toString();
+    }
 
     public Utilizador clone(){
         return new Utilizador(this);
     }
+
 }

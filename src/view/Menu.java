@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import static java.lang.System.out;
 
 public class Menu implements Serializable {
     private List<String> opcoes;
@@ -56,25 +55,6 @@ public class Menu implements Serializable {
         return op;
     }
 
-    public String lerTipo(){
-        String op;
-        Scanner sc = new Scanner(System.in);
-        try{
-            op = sc.nextLine();
-            if(op.equals("Electrico") || op.equals("Hibrido") || op.equals("Gasolina")) {
-                return op;
-            }
-            else {
-                op = null;
-            }
-        }
-        catch (InputMismatchException e) {
-            System.out.println("Não é um tipo válido.");
-            op = null;
-        }
-
-        return op;
-    }
 
     public int getOp(){
         return this.op;

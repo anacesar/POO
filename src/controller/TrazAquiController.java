@@ -47,10 +47,11 @@ public class TrazAquiController {
                 "Licença para entregar encomendas médicas",
                 "Consultar encomendas que transportei",
                 "Ver minha informação pessoal"};
-        String[] loja = {"Ver encomendas prontas para entrega",
+        String[] loja = {"Registar encomenda pronta para entrega",
+                "Registar fila",
                 "Consultar histórico de encomendas",
                 "Ver minha informação pessoal"};
-        String[] empresa = {"Ver encomendas disponíveis para entrega",
+        String[] empresa = {"Sinalizar disponiblidade",
                 "Registar tempo de entrega de uma encomenda e custo associado",
                 "Consultar encomendas transportadas",
                 "Ver minha informação pessoal"};
@@ -70,17 +71,16 @@ public class TrazAquiController {
             this.model = TrazAquiModel.carregaEstado();
         } catch(FileNotFoundException e) {
             System.out.println("Parece que é a primeira utilização... A carregar ficheiro 'logs.txt' ...");
-            try {
+        try {
                 carregaFicheiro(null);
             } catch(IOException | EmailJaExisteException ex) {
-                System.out.println("Erro a careggar ficheiro 'logs.txt'. ");
+                System.out.println("Erro a carregar ficheiro 'logs.txt'. ");
             }
         } catch(IOException e) {
             System.out.println("Ops! Erro de leitura!");
         } catch(ClassNotFoundException e) {
             System.out.println("Ops! Formato de ficheiro de dados errado!");
         }
-
     }
 
     /**
@@ -121,6 +121,7 @@ public class TrazAquiController {
                                             break;
                                         case 2: /* admin wants to save obj */
                                             //this.model.guardaEstado();
+                                            break;
 
                                     }
                                 }while(this.menuAdmin.getOp()!=0);
@@ -132,10 +133,19 @@ public class TrazAquiController {
                                     this.menuUtilizador.executa();
                                     switch(this.menuUtilizador.getOp()){
                                         case 1: /* Fazer Encomenda */
-                                            fazerEncomenda();
+                                            fazerEncomenda(uEmail);
                                             break;
                                         case 2: /* Ver encomendas para entrega (encomendas por entregar)*/
-
+                                            encomendasEntrega(uEmail);
+                                            break;
+                                        case 3: /* Classificar encomendas recebidas */
+                                            break;
+                                        case 4: /* As minhas encomendas */
+                                            minhasEncomendas(uEmail);
+                                            break;
+                                        case 5: /*Ver a minha informação pessoal*/
+                                            this.menuUtilizador.sendMessage(this.model.getUtilizador(uEmail).toString());
+                                            break;
                                     }
                                 }while(this.menuUtilizador.getOp()!=0);
                                 break;
@@ -151,6 +161,16 @@ public class TrazAquiController {
                                         case 2: /* Registar tempo de entrega de uma encomenda */
                                             tempo_entega(this.menuLogin.getOp(), vEmail);
                                             break;
+                                        case 3: /*Licença para entregar encomendas médicas */
+                                            licenca(this.menuLogin.getOp(), vEmail);
+                                            break;
+                                        case 4: /*Consultar encomendas que transportei*/
+                                            this.menuVoluntario.sendMessage(String.valueOf(this.model.getVoluntario(vEmail).getEncomendas_entregues()));
+                                            break;
+                                        case 5: /*Ver a minha informação pessoal*/
+                                            this.menuVoluntario.sendMessage(this.model.getVoluntario(vEmail).toString());
+                                            break;
+
                                     }
                                 }while(this.menuVoluntario.getOp()!=0);
                                 break;
@@ -206,12 +226,12 @@ public class TrazAquiController {
         }
     }
 
-    private void fazerEncomenda() throws EmailJaExisteException {
+    private void fazerEncomenda(String email) throws EmailJaExisteException {
 
         this.menuUtilizador.sendMessage("Indique a loja onde quer efetuar a sua encomenda: ");
+        String res= menuUtilizador.leString();
         for(Loja l: this.model.getMLoja().values()){
-            if (l.getNome().equals( menuUtilizador.leString())){
-
+            if (l.getNome().equals(res)){
                 this.menuUtilizador.sendMessage("Faça a sua encomenda: ");
                 String input=menuUtilizador.leString();
                 String[] campos = input.split(",");
@@ -220,18 +240,32 @@ public class TrazAquiController {
                     Linha_Encomenda le = new Linha_Encomenda(campos[i], campos[i+1], Double.parseDouble(campos[i+2]), Double.parseDouble(campos[i+3]));
                     lle.add(le);
                 }
+                double cordx,cordy;
                 this.menuUtilizador.sendMessage("Morada para qual pretende receber a encomenda: ");
-                String morada = menuUtilizador.leString();
-                Encomenda e = new Encomenda("e"+(this.model.getnEncomendas()+1), this.model.getMUtilizador().get(menuLogin.getEmail()).getCodUtilizador(),l.getCodLoja(),0.0, morada, LocalDate.now(),lle);
+                this.menuUtilizador.sendMessage("Cordx: ");
+                cordx = this.menuUtilizador.lerDouble();
+                this.menuUtilizador.sendMessage("Cordy: ");
+                cordy = this.menuUtilizador.lerDouble();
+                GPS morada =new GPS(cordx,cordy);
+                Encomenda e = new Encomenda("e"+(this.model.getnEncomendas()+1), this.model.getMUtilizador().get(email).getCodUtilizador(),l.getCodLoja(),0.0, morada, LocalDate.now(),lle);
+
                 this.model.addEncomenda(e);
-                this.model.getLoja(l.getEmail()).getQueue().add(e);
+                this.model.getLoja(l.getEmail()).addToQueue(e);
+                this.menuUtilizador.sendMessage(e.toString());
             }
-            else this.menuAdmin.sendMessage("Nome de Loja inválido...");
+
         }
+    }
 
+    private void encomendasEntrega(String email){
+        this.menuUtilizador.sendMessage(String.valueOf(this.model.getUtilizador(email).getEncomendasEntrega()));
 
+    }
 
-
+    private void minhasEncomendas(String email){
+        for (Encomenda e: this.model.getMEncomenda().values()) if(e.getCodUtilizador().equals(this.model.getUtilizador(email).getCodUtilizador())){
+            this.menuUtilizador.sendMessage(String.valueOf(e));
+        }
     }
 
     private void disponibilidade(int op, String email){
@@ -257,6 +291,12 @@ public class TrazAquiController {
                 this.model.getVoluntario(email).sinalizarEncomenda(encomenda -1, time);
             }
         }while(auxiliar.getOp()!= 0);
+    }
+
+    public void licenca(int op, String email){
+        System.out.println("Tem licença para entregas de encomendas médicas? (y/n)");
+        if (this.auxiliar.leYesNo().equals("y")) this.model.availableToMed(op, email, true);
+        else this.model.availableToMed(op, email, false);
     }
 
 }

@@ -140,14 +140,28 @@ public class TrazAquiModel implements Serializable{
         else throw new EmailJaExisteException();
     }
 
-    public void addEncomenda(Encomenda encomenda) throws EmailJaExisteException {
-        if(! encomendas.containsKey(encomenda.getCodEncomenda())) encomendas.put(encomenda.getCodEncomenda(), encomenda.clone());
-        else throw new EmailJaExisteException();
+    public void addEncomenda(Encomenda encomenda)  {
+        if(!encomendas.containsKey(encomenda.getCodEncomenda())) {
+            encomendas.put(encomenda.getCodEncomenda(), encomenda.clone());
+
+        }
+    }
+
+    public void addEncomendaAceite(Encomenda encomenda) {
+        if(encomendas.containsKey(encomenda.getCodEncomenda())) {
+            lojas.get(encomenda.getCodLoja());
+
+        }
     }
 
     public void available(int tipo, String email, boolean state){
         if(tipo == 3) this.voluntarios.get(email).setDisponivel(state);
         else this.empresas.get(email).setDisponivel(state);
+    }
+
+    public void availableToMed(int tipo, String email, boolean state){
+        if(tipo == 3) this.voluntarios.get(email).aceitaMedicamentos(state);
+        else this.empresas.get(email).aceitaMedicamentos(state);
     }
 
     public List<String> encomendas_por_sinalizar(int tipo, String email){
@@ -182,6 +196,7 @@ public class TrazAquiModel implements Serializable{
         utilizadores.forEach((key,value)->nu.put(key,value.clone()));
         return nu;
     }
+
 
     public int nUsers() {
         return utilizadores.size();

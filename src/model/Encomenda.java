@@ -13,9 +13,7 @@ public class Encomenda implements Serializable {
     private String codUtilizador;
     private String codLoja;
     private double peso;
-
-    private String nif;
-    private String morada;
+    private GPS morada;
 
     private LocalDate data;
     private List<Linha_Encomenda> linhas;
@@ -30,7 +28,7 @@ public class Encomenda implements Serializable {
         this.codLoja = "";
         this.peso=0.0;
 
-        this.morada = "";
+        this.morada = new GPS();
         this.data = LocalDate.now();
         this.linhas = new ArrayList<>();
 
@@ -39,7 +37,7 @@ public class Encomenda implements Serializable {
     }
 
 
-    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, String morada,LocalDate data, ArrayList<Linha_Encomenda> linhas) {
+    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, GPS morada,LocalDate data, ArrayList<Linha_Encomenda> linhas) {
         this.codEncomenda = codEncomenda;
         this.codUtilizador = codUtilizador;
         this.codLoja = codLoja;
@@ -116,9 +114,9 @@ public class Encomenda implements Serializable {
     }
 
 
-    public String getMorada() {return this.morada;}
+    public GPS getMorada() {return this.morada;}
 
-    public void setMorada(String morada) {this.morada = morada;}
+    public void setMorada(GPS gps) {this.morada= gps;}
 
     public LocalDate getData() {return this.data;}
 
@@ -188,7 +186,14 @@ public class Encomenda implements Serializable {
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Código da encomenda: ").append(this.codEncomenda);
+
+        sb.append("\nData: ").append(this.data);
+        sb.append("\nUtilizador: ").append(this.codUtilizador);
+        sb.append("\nMorada: ").append(this.morada);
+        sb.append("\n\nCódigo da encomenda: ").append(this.codEncomenda);
+        sb.append("\nCódigo da Loja: ").append(this.codLoja);
+        sb.append("\nPeso: ").append(this.peso);
+        sb.append("\nEncomenda: ").append(this.linhas);
 
         return sb.toString();
     }
