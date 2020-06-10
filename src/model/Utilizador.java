@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 public class Utilizador extends Entidade implements Serializable {
     private String codUtilizador;
-    private List<Encomenda> encomendas_para_entrega;
-    private List<Encomenda> encomendas_entregues;
+    private List<Encomenda> encomendas_standby; //stand by até haver um voluntário dentro do raio
+    private List<Encomenda> encomendas_entregues; //entregue pronta para ser classificada
 
     /**
      * Construtor parametrizado de um Utilizador.
@@ -17,7 +17,7 @@ public class Utilizador extends Entidade implements Serializable {
     public Utilizador(String email, String password, String nome, GPS gps, int number) {
         super(email, password, nome,gps);
         this.codUtilizador = "u" + number;
-        this.encomendas_para_entrega = new ArrayList<>();
+        this.encomendas_standby = new ArrayList<>();
         this.encomendas_entregues = new ArrayList<>();
 
     }
@@ -29,7 +29,7 @@ public class Utilizador extends Entidade implements Serializable {
     public Utilizador(String codUtilizador, String nome, GPS gps) {
         super(codUtilizador,nome, gps);
         this.codUtilizador=codUtilizador;
-        this.encomendas_para_entrega = new ArrayList<>();
+        this.encomendas_standby = new ArrayList<>();
         this.encomendas_entregues = new ArrayList<>();
     }
 
@@ -40,7 +40,7 @@ public class Utilizador extends Entidade implements Serializable {
     public Utilizador(Utilizador utilizador){
         super(utilizador.getEmail(), utilizador.getPassword(), utilizador.getNome(), utilizador.getGps());
         this.codUtilizador = utilizador.getCodUtilizador();
-        this.encomendas_para_entrega = utilizador.getEncomendasEntrega();
+        this.encomendas_standby = utilizador.getEncomendas_Standy();
         this.encomendas_entregues = utilizador.getEncomendas_entregues();
     }
 
@@ -52,12 +52,12 @@ public class Utilizador extends Entidade implements Serializable {
         this.codUtilizador = codUtilizador;
     }
 
-    public List<Encomenda> getEncomendasEntrega() {
-        return this.encomendas_para_entrega.stream().map(Encomenda::clone).collect(Collectors.toList());
+    public List<Encomenda> getEncomendas_Standy() {
+        return this.encomendas_standby.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
 
-    public void setEncomendasEntrega(List<Encomenda> encomendas) {
-        this.encomendas_para_entrega = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
+    public void setEncomendas_Standy(List<Encomenda> encomendas) {
+        this.encomendas_standby = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
 
     public List<Encomenda> getEncomendas_entregues() {
@@ -68,12 +68,12 @@ public class Utilizador extends Entidade implements Serializable {
         this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
 
-    public void addToEntrega(Encomenda e){
-        this.encomendas_para_entrega.add(e);
+    public void addToStandby(Encomenda e){
+        this.encomendas_standby.add(e);
     }
 
-    public void encomendaEntregue(Encomenda encomenda){
-        this.encomendas_para_entrega.remove(encomenda);
+    public void addEncomendaEntregue(Encomenda encomenda){
+        this.encomendas_standby.remove(encomenda);
         this.encomendas_entregues.add(encomenda);
     }
 

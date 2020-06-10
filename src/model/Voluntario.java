@@ -12,7 +12,7 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
     private boolean disponivel;
     private boolean licenca; //licença para entregar encomendas médicas
     private List<Encomenda> encomendas_entregues;
-    private List<Encomenda> encomendas_por_sinalizar;
+    private List<Encomenda> queue; // após sinalizar na app o tempo que levou a entrega ->passa para entregue
 
     /**
      * Construtor parametrizado de um Voluntario.
@@ -22,9 +22,9 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         super(email, password, nome, gps);
         this.codVoluntario = "v" + number;
         this.raio = raio;
-        this.classificacao = 0;
+        this.classificacao = 5;
         this.encomendas_entregues = new ArrayList<>();
-        this.encomendas_por_sinalizar = new ArrayList<>();
+        this.queue = new ArrayList<>();
     }
 
     /**
@@ -36,7 +36,7 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         this.codVoluntario=codVoluntario;
         this.raio= raio;
         this.encomendas_entregues = new ArrayList<>();
-        this.encomendas_por_sinalizar = new ArrayList<>();
+        this.queue = new ArrayList<>();
     }
 
     /**
@@ -49,7 +49,7 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         this.raio = voluntario.getRaio();
         this.classificacao = voluntario.getClassificacao();
         this.encomendas_entregues = voluntario.getEncomendas_entregues();
-        this.encomendas_por_sinalizar = voluntario.getEncomendas_por_sinalizar();
+        this.queue = voluntario.getQueue();
     }
 
     public String getCodVoluntario() {
@@ -80,9 +80,13 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
 
     public void setEncomendas_entregues(List<Encomenda> encomendas) { this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
 
-    public List<Encomenda> getEncomendas_por_sinalizar() { return this.encomendas_por_sinalizar.stream().map(Encomenda::clone).collect(Collectors.toList()); }
+    public List<Encomenda> getQueue() { return this.queue.stream().map(Encomenda::clone).collect(Collectors.toList()); }
 
-    public void setEncomendas_por_sinalizar(List<Encomenda> encomendas) { this.encomendas_por_sinalizar = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
+    public void addToQueue (Encomenda e){
+        this.queue.add(e);
+    }
+
+    public void setQueue(List<Encomenda> encomendas) { this.queue = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
 
     public boolean isDisponivel() {
         return disponivel;
@@ -111,7 +115,7 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
     public void aceitaMedicamentos(boolean state) { this.licenca = state; }
 
     public void sinalizarEncomenda(int index, double time){
-        Encomenda encomenda = this.encomendas_por_sinalizar.remove(index);
+        Encomenda encomenda = this.queue.remove(index);
         encomenda.setTempo(time);
         this.encomendas_entregues.add(encomenda);
     }

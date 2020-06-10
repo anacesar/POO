@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 public class Encomenda implements Serializable {
     /* variáveis de instância que classificam uma encomenda */
+    private String codEntidade_transportadora;
     private String codEncomenda;
     private String codUtilizador;
     private String codLoja;
@@ -35,7 +36,7 @@ public class Encomenda implements Serializable {
         this.data_entrega = null;
         this.classificada = false;
         this.tempo = 0;
-        this.preco = 0;
+        this.preco = calculaPreçoTotal();
     }
 
 
@@ -46,12 +47,9 @@ public class Encomenda implements Serializable {
         this.peso=peso;
         this.linhas=linhas;
 
-        this.entregue = false;
-
         this.data_entrega = null;
-        this.classificada = false;
         this.tempo = 0;
-        this.preco = 0;
+        this.preco = calculaPreçoTotal();
     }
 
     /**
@@ -70,7 +68,7 @@ public class Encomenda implements Serializable {
         this.data_entrega = null;
         this.classificada = false;
         this.tempo = 0;
-        this.preco = 0;
+        this.preco = calculaPreçoTotal();
     }
 
     public Encomenda(Encomenda encomenda) {
@@ -133,6 +131,14 @@ public class Encomenda implements Serializable {
         this.linhas = l.stream().map(Linha_Encomenda::clone).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public String getCodEntidade_transportadora() {
+        return codEntidade_transportadora;
+    }
+
+    public void setCodEntidade_transportadora(String codEntidade_transportadora) {
+        this.codEntidade_transportadora = codEntidade_transportadora;
+    }
+
     public double getTempo() { return this.tempo; }
 
     public void setTempo(double tempo) { this.tempo = tempo; }
@@ -145,7 +151,7 @@ public class Encomenda implements Serializable {
         return new Encomenda(this);
     }
 
-    public double calculaValorTotal(){
+    public double calculaPreçoTotal(){
         return this.linhas.stream().mapToDouble(Linha_Encomenda::calculaValorLinhaEnc).sum();
     }
 

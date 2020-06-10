@@ -14,18 +14,18 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
     private double precokm;
     private boolean disponivel;
     private boolean licenca;
-    private List<Encomenda> encomendas_entregues;
-    private List<Encomenda> encomendas_por_sinalizar;
+    private List<Encomenda> queue;
+    private List<Encomenda> encomendas_entregues; //tempo de entrega + custo da entrega
 
     public Empresa(String email, String password, String nome, GPS gps, String nif, double raio, double precokm, int number) {
         super(email, password, nome, gps);
         this.codEmpresa = "l" + number;
-        this.classificacao = 0;
+        this.classificacao = 5;
         this.raio=raio;
         this.nif=nif;
         this.precokm=precokm;
+        this.queue = new ArrayList<>();
         this.encomendas_entregues = new ArrayList<>();
-        this.encomendas_por_sinalizar = new ArrayList<>();
     }
 
     /**
@@ -38,8 +38,8 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         this.nif=nif;
         this.raio=raio;
         this.precokm=precokm;
+        this.queue = new ArrayList<>();
         this.encomendas_entregues = new ArrayList<>();
-        this.encomendas_por_sinalizar = new ArrayList<>();
 
     }
 
@@ -50,8 +50,8 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         this.nif=empresa.getNif();
         this.raio=empresa.getRaio();
         this.precokm=empresa.getPrecokm();
+        this.queue = empresa.getQueue();
         this.encomendas_entregues = empresa.getEncomendas_entregues();
-        this.encomendas_por_sinalizar = empresa.getEncomendas_sinalizar();
 
     }
 
@@ -91,8 +91,8 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         return this.classificacao;
     }
 
-    public void setClassificacao(double classificacao) {
-        this.classificacao = classificacao;
+    public void addClassificacao(double cl) {
+        this.classificacao = (this.classificacao + cl) / 2;
     }
 
     public boolean isDisponivel() { return this.disponivel; }
@@ -107,26 +107,19 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         this.licenca = licenca;
     }
 
-    //preciso corrigir
+
+    public List<Encomenda> getQueue() {
+        return this.queue.stream().map(Encomenda::clone).collect(Collectors.toList());
+    }
+
+    public void addToQueue (Encomenda e){
+        this.queue.add(e);
+    }
+
     public List<Encomenda> getEncomendas_entregues() {
         return this.encomendas_entregues.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
 
-    public void setEncomendas_entregues(List<Encomenda> encomendas_entregues) {
-        this.encomendas_entregues = encomendas_entregues.stream().map(Encomenda::clone).collect(Collectors.toList());
-    }
-
-    public List<Encomenda> getEncomendas_sinalizar() {
-        return this.encomendas_por_sinalizar.stream().map(Encomenda::clone).collect(Collectors.toList());
-    }
-
-    public void setEncomendas_sinalizar(List<Encomenda> encomendas) {
-        this.encomendas_por_sinalizar = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
-    }
-
-    public void addClassificacao(double cl) {
-        this.classificacao = (this.classificacao + cl) / 2;
-    }
 
     public Empresa clone() {
         return new Empresa(this);
@@ -140,7 +133,7 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
 
 
     public void sinalizarEncomenda(int index, double time, double price){
-        Encomenda encomenda = this.encomendas_por_sinalizar.remove(index);
+        Encomenda encomenda = this.queue.remove(index);
         encomenda.setTempo(time);
         encomenda.setPreco(price);
         this.encomendas_entregues.add(encomenda);
@@ -158,6 +151,14 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         sb.append("\nLicença: ").append(this.isLicenca());
         sb.append("\nDisponiblidade: ").append(this.isDisponivel());
 
+        return sb.toString();
+    }
+
+    public String toStringTOclients(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nNome: ").append(this.getNome());
+        sb.append("\nClassificação: ").append(this.getClassificacao());
+        sb.append("\nPreço: ").append(this.getPrecokm());
         return sb.toString();
     }
 }

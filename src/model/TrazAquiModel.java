@@ -83,6 +83,7 @@ public class TrazAquiModel implements Serializable{
         oos.close();
     }
 
+
     public static TrazAquiModel carregaEstado() throws FileNotFoundException, IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream("estado.obj");
         ObjectInputStream ois = new ObjectInputStream(fis);
@@ -90,6 +91,7 @@ public class TrazAquiModel implements Serializable{
         ois.close();
         return new_model;
     }
+
 
     public boolean checkLogin(Integer tipo, String email, String password){
         boolean valid = false;
@@ -143,7 +145,7 @@ public class TrazAquiModel implements Serializable{
             Utilizador u = getUtilizadorC(encomenda.getCodUtilizador());
             Loja l = getLojaC(encomenda.getCodLoja());
             if(u == null || l == null) return;
-            u.addToEntrega(encomenda);
+            u.addToStandby(encomenda);
             l.addToQueue(encomenda);
         }
     }
@@ -164,7 +166,17 @@ public class TrazAquiModel implements Serializable{
     }
 
     public void available(int tipo, String email, boolean state){
-        if(tipo == 3) this.voluntarios.get(email).setDisponivel(state);
+        if(tipo == 3) {
+            Voluntario v =this.voluntarios.get(email);
+            List<Encomenda> le = getEncomendas_Espera_Voluntario();
+            v.setDisponivel(state);
+            for(int i=0; i<le.size(); i++){
+                Encomenda e =le.get(i);
+                if (e instanceof EncomendaMedica)
+                    if(dentroDoRaio(v,e, true)!=null) v.addToQueue(dentroDoRaio(v,e, true));
+                else if(dentroDoRaio(v,e, false)!=null) v.addToQueue(dentroDoRaio(v,e, false));
+            }
+        }
         else this.empresas.get(email).setDisponivel(state);
     }
 
@@ -173,43 +185,96 @@ public class TrazAquiModel implements Serializable{
         else this.empresas.get(email).aceitaMedicamentos(state);
     }
 
-    public Voluntario temVoluntario(String codLoja, Utilizador u){
-        GPS localizacao_loja = getLojaC(codLoja).getGps();
-        GPS localizacao_u = u.getGps();
-        double dist = localizacao_loja.distancia(localizacao_u);
+    /* Dado um voluntario vê se a encomenda dada se encontra no seu raio
+        Auxiliar da available
+    * */
+    public Encomenda dentroDoRaio(Voluntario v ,Encomenda e,Boolean medica){
+        GPS localizacao_voluntario= v.getGps();
+        GPS localizacao_loja = getLojaC(e.getCodLoja()).getGps();
+        GPS localizacao_u = getUtilizadorC(e.getCodUtilizador()).getGps();
+        double dist_lu = localizacao_loja.distancia(localizacao_u);
+        double dist_total = dist_lu+ localizacao_voluntario.distancia(localizacao_loja);
+        if(medica) {
+            if(v.isLicenca() && !(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())) return e;
+        }
+        else if (!(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())) return e;
+        return null;
+    }
+
+    /* Dada uma encomenda vê se há voluntarios que a possam entregar
+        Seliciona o que estiver mais perto
+        Auxiliar da fazerEncomenda
+    * */
+    public Voluntario temVoluntario(Encomenda e, Boolean medica){
+        GPS localizacao_loja = getLojaC(e.getCodLoja()).getGps();
+        GPS localizacao_u = getUtilizadorC(e.getCodUtilizador()).getGps();
+        Double dist_v_escolhido=1000000.0;
+        Voluntario v_escolhido=null;
+        double dist_lu = localizacao_loja.distancia(localizacao_u);
         for (Voluntario v : voluntarios.values()){
-            if(!(dist>v.getRaio()) && v.isDisponivel()) return v;
+            double dist_total = dist_lu+ v.getGps().distancia(localizacao_loja);
+            if(medica) {
+                if(v.isLicenca() && !(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())){
+                   if (dist_total<dist_v_escolhido) {
+                        v_escolhido=v;
+                        dist_v_escolhido=dist_total;
+                    }
+                }
+            }
+            else if (!(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())){
+                if (dist_total<dist_v_escolhido) {
+                    v_escolhido=v;
+                    dist_v_escolhido=dist_total;
+                }
+            };
         }
-        return null;
-
+        return v_escolhido;
     }
 
-    public  List<Empresa> empresasDisponiveis(String codLoja, Utilizador u){
+    /* Dada uma encomenda vê se há empresas que a possam entregar
+        Auxiliar da fazerEncomenda
+    * */
+    public  List<Empresa> empresasDisponiveis(Encomenda enc, Boolean medica){
         List<Empresa> empresas_possiveis= new ArrayList<>();
-        GPS localizacao_loja = getLojaC(codLoja).getGps();
-        GPS localizacao_u = u.getGps();
-        double dist = localizacao_loja.distancia(localizacao_u);
+        GPS localizacao_loja = getLojaC(enc.getCodLoja()).getGps();
+        GPS localizacao_u = getUtilizadorC(enc.getCodUtilizador()).getGps();
+        double dist_lu = localizacao_loja.distancia(localizacao_u);
         for (Empresa e : empresas.values()){
-            if(!(dist>e.getRaio()) && e.isDisponivel()) empresas_possiveis.add(e);
+            double dist_total = dist_lu+ e.getGps().distancia(localizacao_loja);
+            if(medica) {
+                if(e.isLicenca() && !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio())) empresas_possiveis.add(e);
+            }
+            else if ( !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio()) ) empresas_possiveis.add(e);
         }
         return null;
     }
 
-    public  List<String> empresasDS(String codLoja, Utilizador u){
+    /* Dada uma encomenda vê se há empresas que a possam entregar
+        Auxiliar da fazerEncomenda
+        passa as empresas para string para as podermos passar ao menuAuxiliar como uma list<string>
+                     ||
+                  SE SOUBERES, FAZ DE OUTRA MANEIRA
+    * */
+
+    public  List<String> empresasDS(Encomenda enc,Boolean medica){
         List<String> empresas_possiveis= new ArrayList<>();
-        GPS localizacao_loja = getLojaC(codLoja).getGps();
-        GPS localizacao_u = u.getGps();
-        double dist = localizacao_loja.distancia(localizacao_u);
+        GPS localizacao_loja = getLojaC(enc.getCodLoja()).getGps();
+        GPS localizacao_u = getUtilizadorC(enc.getCodUtilizador()).getGps();
+        double dist_lu = localizacao_loja.distancia(localizacao_u);
         for (Empresa e : empresas.values()){
-            if(!(dist>e.getRaio()) && e.isDisponivel()) empresas_possiveis.add(e.toString());
+            double dist_total = dist_lu+ e.getGps().distancia(localizacao_loja);
+            if(medica) {
+                if(e.isLicenca() && !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio())) empresas_possiveis.add(e.toStringTOclients());
+            }
+            else if ( !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio()) ) empresas_possiveis.add(e.toStringTOclients());
         }
         return null;
     }
 
     public List<String> encomendas_por_sinalizar(int tipo, String email){
 
-        if(tipo == 3) return this.voluntarios.get(email).getEncomendas_por_sinalizar().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
-        else return this.empresas.get(email).getEncomendas_sinalizar().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
+        if(tipo == 3) return this.voluntarios.get(email).getQueue().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
+        else return this.empresas.get(email).getQueue().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
     }
 
     public List<String> toEntrega(String lEmail){
@@ -225,6 +290,7 @@ public class TrazAquiModel implements Serializable{
     public Empresa getEmpresa(String email){ return this.empresas.get(email); }
 
     public Encomenda getEncomenda(String cod) {return this.encomendas.get(cod);}
+
 
     public Utilizador getUtilizadorC(String codUtilizador){
         for(Utilizador u : this.utilizadores.values()){
@@ -279,6 +345,13 @@ public class TrazAquiModel implements Serializable{
         return nu;
     }
 
+    public List<Encomenda> getEncomendas_Espera_Voluntario(){
+        List<Encomenda> encomendas_espera_voluntario = new ArrayList<>();
+        for(Utilizador u: utilizadores.values()){
+           encomendas_espera_voluntario.addAll(u.getEncomendas_Standy());
+        }
+        return encomendas_espera_voluntario;
+    }
 
     public int nUsers() {
         return utilizadores.size();

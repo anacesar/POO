@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TrazAquiController {
     /* camada lógica */
@@ -82,12 +83,13 @@ public class TrazAquiController {
         } catch(ClassNotFoundException e) {
             System.out.println("Ops! Formato de ficheiro de dados errado!");
         }
+
     }
 
     /**
      * Executa o menu principal e invoca o método correspondente à opção seleccionada.
      */
-    public void run() throws IOException {
+    public void run() throws IOException, EmailJaExisteException {
         System.out.println("----------------------TrazAquiApp------------------------");
         System.out.println("nr users: " + model.nUsers());
         System.out.println("nr volu: " + model.nVolu());
@@ -137,10 +139,11 @@ public class TrazAquiController {
                                         case 1: /* Fazer Encomenda */
                                             fazerEncomenda(uEmail);
                                             break;
-                                        case 2: /* Ver encomendas para entrega (encomendas por entregar)*/
-                                            encomendasEntrega(uEmail);
+                                        case 2: /* Ver as minhas encomendas à espera de voluntário*/
+                                            encomendasStandby(uEmail);
                                             break;
                                         case 3: /* Classificar encomendas recebidas */
+                                            classificarEncomenda(uEmail);
                                             break;
                                         case 4: /* As minhas encomendas */
                                             minhasEncomendas(uEmail);
@@ -158,9 +161,13 @@ public class TrazAquiController {
                                     this.menuVoluntario.executa();
                                     switch(this.menuVoluntario.getOp()){
                                         case 1: /* Sinalizar disponibilidade */
+                                            /*Sempre que entra aqui,adiciono uma encomenda em standby dentro do seu raio
+                                             */
                                             disponibilidade(this.menuLogin.getOp(), vEmail);
                                             break;
                                         case 2: /* Registar tempo de entrega de uma encomenda */
+                                            /*Sempre que entra aqui, mudo a flag para entregue e adiciono nas encomendas para classificar do utilizador
+                                             */
                                             tempo_entrega(this.menuLogin.getOp(), vEmail);
                                             break;
                                         case 3: /*Licença para entregar encomendas médicas */
@@ -229,13 +236,10 @@ public class TrazAquiController {
                     clearScreen();
                     this.signUpMenu.executa();
                     if(this.signUpMenu.getOp() == 0) break;
-                    //switch(this.signUpMenu.getOp()){
+                    clearScreen();
                         registo(this.signUpMenu.getOp());
-                       // case 1:
-                            /* new utilizador */
-                         //   break;
 
-                    //}
+                     break;
                 case 0:
                     mainMenu.sendMessage("\n                                   ＧＯＯＤＢＹＥ\n");
                     break;
@@ -251,6 +255,7 @@ public class TrazAquiController {
             System.out.println("Erro ao salvar dados.");
         }
         System.out.println("Saindo do programa...");
+
     }
 
 
@@ -272,33 +277,88 @@ public class TrazAquiController {
         }
     }
 
-    private void registo(int tipo){
+    /*TIPOS
+          1 Utilizador
+          2 Voluntário
+          3 Loja
+          4 Empresa */
+    private void registo(int tipo) throws EmailJaExisteException {
         this.signUpMenu.sendMessage("Email: ");
-        String user = this.signUpMenu.leString();
+        String email = this.signUpMenu.leString();
         this.signUpMenu.sendMessage("Password:  ");
         String pwd = this.signUpMenu.leString();
 
         this.signUpMenu.sendMessage("Nome: ");
         String nome = this.signUpMenu.leString();
+        String nif = null;
+        Double pkm = null;
         if(tipo==4) {
-            Integer nif;
             do {
                 this.signUpMenu.sendMessage("NIF: ");
-                nif = this.signUpMenu.leInt();
-            } while (String.valueOf(nif).length() != 9);
+                nif = this.signUpMenu.leString();
+                if (nif.length() != 9) this.signUpMenu.sendMessage("O NIF tem que ter 9 números!");
+            } while (nif.length() != 9);
+            this.signUpMenu.sendMessage("Preço por Km: ");
+            pkm = this.signUpMenu.lerDouble();
         }
-        this.signUpMenu.sendMessage("Morada: ");
-        String morada = this.signUpMenu.leString();
+        Double raio = null;
+        Boolean licenca= false;
+        if(tipo==2 || tipo==4){
+            this.signUpMenu.sendMessage("Tem licença para entregas de encomendas médicas? (y/n)");
+            if (this.signUpMenu.leYesNo().equals("y")) licenca=true;
+            this.signUpMenu.sendMessage("Raio de ação: ");
+            raio = this.signUpMenu.lerDouble();
+        }
+        this.signUpMenu.sendMessage("\n--LOCALIZAÇÃO-- ");
+        this.signUpMenu.sendMessage("Cordenada x: ");
+        Double cordx = this.signUpMenu.lerDouble();
+        this.signUpMenu.sendMessage("Cordenada y: ");
+        Double cordy = this.signUpMenu.lerDouble();
+        GPS gps =new GPS(cordx,cordy);
 
+        switch(tipo){
+            case 1:
+                int nu=this.model.getnUtilizadores()+1;
+                this.model.addUtilizador(new Utilizador(email,pwd,nome,gps,nu));
+                this.model.setnUtilizadores(nu);
+                this.signUpMenu.sendMessage("\nUtilizador "+nome+" criado com sucesso!");
+                break;
+            case 2:
+                int nv=this.model.getnVoluntarios()+1;
+                Voluntario v = new Voluntario(email,pwd,nome,gps,raio,nv);
+                v.setLicenca(licenca);
+                this.model.addVoluntario(v);
+                this.model.setnVoluntarios(nv);
+                this.signUpMenu.sendMessage("\nVoluntário "+nome+" criado com sucesso!");
+                break;
+            case 3:
+                int nl=this.model.getnLojas()+1;
+                this.model.addLoja( new Loja(email,pwd,nome,gps,nl) );
+                this.model.setnLojas(nl);
+                this.signUpMenu.sendMessage("\nLoja "+nome+" criada com sucesso!");
+                break;
+            case 4:
+                int ne=this.model.getnEmpresas()+1;
+                Empresa e = new Empresa(email,pwd,nome,gps,nif,raio,pkm,ne);
+                e.setLicenca(licenca);
+                this.model.addEmpresa(e);
+                this.model.setnEmpresas(ne);
+                this.signUpMenu.sendMessage("\nEmpresa "+nome+" criada com sucesso!");
+                break;
+
+        }
     }
 
 
     private void fazerEncomenda(String email){
-
+        Boolean medica=false;
+        this.menuUtilizador.sendMessage("Trata-se de uma encomenda médica? (y/n) ");
+        if (auxiliar.leYesNo().equals("y")) medica=true;
         this.menuUtilizador.sendMessage("Indique a loja onde quer efetuar a sua encomenda: ");
         String res= menuUtilizador.leString();
         for(Loja l: this.model.getMLoja().values()){
             if (l.getNome().equals(res)){
+                espera_loja(l);
                 this.menuUtilizador.sendMessage("Faça a sua encomenda: ");
                 String input=menuUtilizador.leString();
                 String[] campos = input.split(",");
@@ -308,29 +368,34 @@ public class TrazAquiController {
                     lle.add(le);
                 }
                 int nEncomenda = this.model.getnEncomendas() +1;
-                Encomenda e = new Encomenda("e"+nEncomenda, this.model.getMUtilizador().get(email).getCodUtilizador(),l.getCodLoja(),0.0, lle);
+                Encomenda e=null;
+                if(medica) e = new EncomendaMedica("e"+nEncomenda, this.model.getMUtilizador().get(email).getCodUtilizador(),l.getCodLoja(),0.0, lle);
+                else e=new Encomenda("e"+nEncomenda, this.model.getMUtilizador().get(email).getCodUtilizador(),l.getCodLoja(),0.0, lle);
                 this.model.setnEncomendas(nEncomenda);
                 this.model.getLoja(l.getEmail()).addToQueue(e);
                 this.menuUtilizador.sendMessage(e.toString());
-                Voluntario v= this.model.temVoluntario(e.getCodLoja(),this.model.getUtilizador(email));
+                Voluntario v= this.model.temVoluntario(e,medica);
                 if (v!=null) {
                     this.menuUtilizador.sendMessage("\nTemos um voluntário para fazer a sua entrega: ");
                     this.menuUtilizador.sendMessage(v.toString());
-                    v.getEncomendas_por_sinalizar().add(e);
+                    v.addToQueue(e);
                 }
                 else{
-                    List<Empresa> empresasDisp=this.model.empresasDisponiveis(e.getCodLoja(),this.model.getUtilizador(email));
-                    List<String> empresasDS=this.model.empresasDS(e.getCodLoja(),this.model.getUtilizador(email));
+                    List<Empresa> empresasDisp=this.model.empresasDisponiveis(e,medica);
+                    List<String> empresasDS=this.model.empresasDS(e,medica);
 
                     Menu auxiliar = new Menu(empresasDS);
-                    auxiliar.sendMessage("Escolha a empresa pelo código: ");
+                    auxiliar.sendMessage("Escolha a empresa pelo código: \nCaso não pretenda esperar por um voluntário disponível, escolha 0. ");
                     do {
                         auxiliar.executa();
-                        if (auxiliar.getOp() == 0) break;
+                        if (auxiliar.getOp() == 0){
+                            this.model.getUtilizador(email).addToStandby(e);
+                            break;
+                        }
                         int empresa_index = auxiliar.getOp();
                         auxiliar.sendMessage("\nComfirma a seleção da empresa:\n" + empresasDisp.get(empresa_index - 1));
                         if (auxiliar.leYesNo().equals("y")) {
-                                empresasDisp.get(empresa_index - 1).getEncomendas_sinalizar().add(e);
+                                empresasDisp.get(empresa_index - 1).addToQueue(e);
                         }
                     }while (auxiliar.getOp()!= 0);
                 }
@@ -339,9 +404,18 @@ public class TrazAquiController {
         }
     }
 
+    /*
+    Consideramos que demoram 10 minutos por pessoa, no máximo
+    * */
+    private void espera_loja (Loja l){
+       int tempo_espera = ((l.getQueue().size()) * 10);
+       if (tempo_espera>10) {
+           this.menuUtilizador.sendMessage("A sua encomenda pode demorar até " + tempo_espera + " minutos a sair da loja.");
+       }else this.menuUtilizador.sendMessage("A sua encomenda vai demorar menos de " + tempo_espera + " minutos a sair da loja.");
+    }
 
-    private void encomendasEntrega(String email){
-        this.model.getUtilizador(email).getEncomendasEntrega().stream().forEach(encomenda -> this.menuVoluntario.sendMessage(encomenda.toString()));
+    private void encomendasStandby(String email){
+        this.model.getUtilizador(email).getEncomendas_Standy().stream().forEach(encomenda -> this.menuVoluntario.sendMessage(encomenda.toString()));
     }
 
     private void minhasEncomendas(String email){
@@ -356,34 +430,67 @@ public class TrazAquiController {
         else this.model.available(op, email, false);
     }
 
+
     public void tempo_entrega(int op, String email){
         Menu auxiliar = new Menu(this.model.encomendas_por_sinalizar(op, email));
-        auxiliar.sendMessage("Escolha a encomenda pelo código: ");
+        auxiliar.sendMessage("Escolha a encomenda: ");
         do{
             auxiliar.executa();
             if(auxiliar.getOp()== 0) break;
-            int encomenda = auxiliar.getOp();
+
+            int encomenda_index = auxiliar.getOp();
+            String codEnc_escolhida =this.model.encomendas_por_sinalizar(op, email).get(encomenda_index -1);
+            Encomenda e=this.model.getEncomendaC(codEnc_escolhida);
+            this.model.getUtilizadorC(e.getCodUtilizador()).addEncomendaEntregue(e);
+
             auxiliar.sendMessage("Indique o tempo que demorou a entregar a encomenda: ");
             double time = auxiliar.lerDouble();
             if(op == 5){
                 auxiliar.sendMessage("Indique o custo associado: ");
                 double price = auxiliar.lerDouble();
-                this.model.getEmpresa(email).sinalizarEncomenda(encomenda -1, time, price);
+                e.setCodEntidade_transportadora(this.model.getEmpresa(email).getCodEmpresa());
+
+                this.model.getEmpresa(email).sinalizarEncomenda(encomenda_index -1, time, price);
             }else{
-                this.model.getVoluntario(email).sinalizarEncomenda(encomenda -1, time);
+                this.model.getVoluntario(email).sinalizarEncomenda(encomenda_index -1, time);
+                e.setCodEntidade_transportadora(this.model.getVoluntario(email).getCodVoluntario());
             }
         }while(auxiliar.getOp()!= 0);
     }
 
     public void readyToentrega(String lEmail){
         Menu auxiliar = new Menu(this.model.toEntrega(lEmail));
-        auxiliar.sendMessage("Escolha a encomenda pelo código: ");
+        auxiliar.sendMessage("Escolha a encomenda: ");
             auxiliar.executa();
             if(auxiliar.getOp()!= 0) {
                 int encomenda_index= auxiliar.getOp();
+                String codEnc_escolhida =this.model.toEntrega(lEmail).get(encomenda_index-1);
                 this.model.getLoja(lEmail).addToAceites(encomenda_index - 1);
-                auxiliar.sendMessage("\nA encomenda "+ this.model.getLoja(lEmail).getEncomendas_aceites().get(encomenda_index-1).getCodEncomenda() + " está sinalizada para entrega!");
+                auxiliar.sendMessage("\nA encomenda "+ codEnc_escolhida+ " está sinalizada para entrega!");
             }
+    }
+
+
+    public void classificarEncomenda(String uEmail){
+        Utilizador u= this.model.getUtilizador(uEmail);
+        List<String> codigos_enc_entregues = u.getEncomendas_entregues().stream().filter(e -> (e.isClassificada()==false)).map(Encomenda::getCodEncomenda).collect(Collectors.toList());
+        Menu auxiliar = new Menu(codigos_enc_entregues);
+        this.auxiliar.sendMessage("Escolha a encomenda que pretende classificar: ");
+        this.auxiliar.executa();
+        if(this.auxiliar.getOp()!= 0) {
+            int encomenda_index= auxiliar.getOp();
+            String codEnc_escolhida = codigos_enc_entregues.get(encomenda_index -1);
+            Encomenda e_escolhida = this.model.getEncomendaC(codEnc_escolhida);
+            auxiliar.sendMessage("Classifique a encomenda "+codEnc_escolhida+" de 0 a 5: ");
+            do {
+                int cl= auxiliar.leInt();
+                e_escolhida.setClassificada(true);
+                String cod_entidade_transportadora=e_escolhida.getCodEntidade_transportadora();
+                if(cod_entidade_transportadora.charAt(0)=='v') this.model.getVoluntarioC(cod_entidade_transportadora).addClassificacao(cl);
+                else this.model.getEmpresaC(cod_entidade_transportadora).addClassificacao(cl);
+            }while (this.auxiliar.leInt()< 0 || this.auxiliar.leInt()<5 );
+        }
+
     }
 
     public void licenca(int op, String email){
