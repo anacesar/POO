@@ -72,6 +72,18 @@ public class Loja extends Entidade implements Serializable {
         this.encomendas_aceites.add(e);
     }
 
+    public void addToAceites(Encomenda encomenda){
+        this.queue.remove(encomenda);
+        this.encomendas_aceites.add(encomenda);
+    }
+
+    public List<Encomenda> allEncomendas(){
+        List<Encomenda> res = new ArrayList<>();
+        res.addAll(getQueue());
+        res.addAll(getEncomendas_aceites());
+        return res;
+    }
+
     public Loja clone() {
         return new Loja(this);
     }

@@ -11,8 +11,9 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
     private Double raio;
     private boolean disponivel;
     private boolean licenca; //licença para entregar encomendas médicas
+    private double vkm = 50;
     private List<Encomenda> encomendas_entregues;
-    private List<Encomenda> queue; // após sinalizar na app o tempo que levou a entrega ->passa para entregue
+    private List<Encomenda> encomendas_por_sinalizar; // após sinalizar na app o tempo que levou a entrega ->passa para entregue
 
     /**
      * Construtor parametrizado de um Voluntario.
@@ -22,9 +23,11 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         super(email, password, nome, gps);
         this.codVoluntario = "v" + number;
         this.raio = raio;
-        this.classificacao = 5;
+        this.classificacao = 0;
+        this.disponivel = true;
+        this.licenca = false;
         this.encomendas_entregues = new ArrayList<>();
-        this.queue = new ArrayList<>();
+        this.encomendas_por_sinalizar = new ArrayList<>();
     }
 
     /**
@@ -34,9 +37,12 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
     public Voluntario(String codVoluntario, String nome, GPS gps, Double raio){
         super(codVoluntario,nome, gps);
         this.codVoluntario=codVoluntario;
+        this.classificacao = 0;
         this.raio= raio;
+        this.disponivel = true;
+        this.licenca = false;
         this.encomendas_entregues = new ArrayList<>();
-        this.queue = new ArrayList<>();
+        this.encomendas_por_sinalizar = new ArrayList<>();
     }
 
     /**
@@ -48,8 +54,10 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         this.codVoluntario = voluntario.getCodVoluntario();
         this.raio = voluntario.getRaio();
         this.classificacao = voluntario.getClassificacao();
+        this.disponivel = voluntario.isDisponivel();
+        this.licenca = voluntario.isLicenca();
         this.encomendas_entregues = voluntario.getEncomendas_entregues();
-        this.queue = voluntario.getQueue();
+        this.encomendas_por_sinalizar = voluntario.getEncomendas_por_sinalizar();
     }
 
     public String getCodVoluntario() {
@@ -76,17 +84,17 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         this.raio = raio;
     }
 
-    public List<Encomenda> getEncomendas_entregues() { return this.encomendas_entregues.stream().map(Encomenda::clone).collect(Collectors.toList()); }
+    public List<Encomenda> getEncomendas_entregues() { return this.encomendas_entregues.stream().collect(Collectors.toList()); }
 
     public void setEncomendas_entregues(List<Encomenda> encomendas) { this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
 
-    public List<Encomenda> getQueue() { return this.queue.stream().map(Encomenda::clone).collect(Collectors.toList()); }
+    public List<Encomenda> getEncomendas_por_sinalizar() { return this.encomendas_por_sinalizar.stream().collect(Collectors.toList()); }
 
-    public void addToQueue (Encomenda e){
-        this.queue.add(e);
+    public void addEncomendaPorSinalizar (Encomenda e){
+        this.encomendas_por_sinalizar.add(e);
     }
 
-    public void setQueue(List<Encomenda> encomendas) { this.queue = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
+    public void setQueue(List<Encomenda> encomendas) { this.encomendas_por_sinalizar = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList()); }
 
     public boolean isDisponivel() {
         return disponivel;
@@ -106,6 +114,10 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         this.classificacao = (this.classificacao + cl) /2;
     }
 
+    public double getVkm() { return this.vkm; }
+
+    public void setVkm(double vkm) { this.vkm = vkm; }
+
     public Voluntario clone(){ return new Voluntario(this); }
 
     @Override
@@ -114,10 +126,16 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
     @Override
     public void aceitaMedicamentos(boolean state) { this.licenca = state; }
 
-    public void sinalizarEncomenda(int index, double time){
-        Encomenda encomenda = this.queue.remove(index);
-        encomenda.setTempo(time);
+    public void sinalizarEncomenda(Encomenda encomenda){
+        this.encomendas_por_sinalizar.remove(encomenda);
         this.encomendas_entregues.add(encomenda);
+    }
+
+    public List<Encomenda> allEncomendas(){
+        List<Encomenda> res = new ArrayList<>();
+        res.addAll(getEncomendas_entregues());
+        res.addAll(getEncomendas_por_sinalizar());
+        return res;
     }
 
     public String toString(){
@@ -133,6 +151,15 @@ public class Voluntario extends Entidade implements Serializable, LicencaMedica 
         sb.append("\nLicença: ").append(this.isLicenca());
         sb.append("\nDisponiblidade: ").append(this.isDisponivel());
 
+
+        return sb.toString();
+    }
+
+    public String toString(int flag){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Nome: ").append(this.getNome());
+        sb.append("\nEmail: ").append(this.getEmail());
 
         return sb.toString();
     }

@@ -37,26 +37,21 @@ public class Parser {
                 case "Utilizador":
                     Utilizador u = parseUtilizador(linhaPartida[1]); // criar um Utilizador
                     if(checkUtilizador(u)) model.addUtilizador(u);
-                    // System.out.println(u.toString()); //enviar para o ecrÃ¡n apenas para teste
                     break;
                 case "Voluntario":
                     Voluntario v = parseVoluntario(linhaPartida[1]);
                     if(checkVoluntario(v)) model.addVoluntario(v);
-                    // System.out.println(v.toString()); //enviar para o ecrÃ¡n apenas para teste
                 case "Loja":
                     Loja l = parseLoja(linhaPartida[1]);
                     if(checkLoja(l)) model.addLoja(l);
-                    // System.out.println(l.toString());
                     break;
                 case "Transportadora":
                     Empresa t = parseEmpresa(linhaPartida[1]);
                     if(checkEmpresa(t)) model.addEmpresa(t);
-                    // System.out.println(l.toString());
                     break;
                 case "Encomenda":
                     Encomenda e = parseEncomenda(linhaPartida[1]);
                     if(checkEncomenda(e)) model.addEncomenda(e);
-                    //System.out.println(e.toString());
                     break;
                 case "Aceite":
                     String ea = linhaPartida[1];

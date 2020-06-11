@@ -3,6 +3,7 @@ package model;
 import exceptions.EmailJaExisteException;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -140,30 +141,107 @@ public class TrazAquiModel implements Serializable{
     }
 
     public void addEncomenda(Encomenda encomenda)  {
-        if(!encomendas.containsKey(encomenda.getCodEncomenda())) {
+        if(!encomendas.containsKey(encomenda.getCodEncomenda()))
             encomendas.put(encomenda.getCodEncomenda(), encomenda.clone());
-            Utilizador u = getUtilizadorC(encomenda.getCodUtilizador());
-            Loja l = getLojaC(encomenda.getCodLoja());
-            if(u == null || l == null) return;
+    }
+
+
+    public void addEncomendaAceite(String codEncomenda) {
+        Encomenda encomenda = getEncomendaC(codEncomenda);
+
+        if(encomenda == null) return;
+
+        Utilizador u = getUtilizadorC(encomenda.getCodUtilizador());
+        Loja l = getLojaC(encomenda.getCodLoja());
+
+        if(u == null || l == null) return;
+
+        Voluntario v= temVoluntario(encomenda);
+
+        if(v == null){
             u.addToStandby(encomenda);
             l.addToQueue(encomenda);
+        }else{
+            encomenda.setData(LocalDateTime.now());
+            encomenda.setCodEntidade_transportadora(v.getCodVoluntario());
+            v.addEncomendaPorSinalizar(encomenda);
+            u.addEncomendaEntregue(encomenda);
+            l.addToAceites(encomenda);
         }
     }
 
-    public void addEncomendaAceite(String codEncomenda) {
-        if(encomendas.containsKey(codEncomenda)) {
-            Encomenda e = getEncomendaC(codEncomenda);
-            Loja l=getLojaC(e.getCodLoja());
-            l.getEncomendas_aceites().add(e);
-                for(int j = 0; j < l.getQueue().size(); j++) {
-                    Encomenda r =l.getQueue().get(j);
-                    if (r.getCodEncomenda().equals(codEncomenda)){
-                        l.getQueue().remove(j);
-                        break;
-                    }
-                }
-            }
+    public Utilizador getUtilizador(String email){ return this.utilizadores.get(email); }
+
+    public Utilizador getUtilizadorC(String codUtilizador){
+        for(Utilizador u : this.utilizadores.values()){
+            if(u.getCodUtilizador().equals(codUtilizador)) return u;
+        }
+        return null;
     }
+    public Voluntario getVoluntario(String email){ return this.voluntarios.get(email); }
+
+    public Voluntario getVoluntarioC(String codVoluntario){
+        for(Voluntario v : this.voluntarios.values()){
+            if(v.getCodVoluntario().equals(codVoluntario)) return v;
+        }
+        return null;
+    }
+
+    public Loja getLoja(String email){ return this.lojas.get(email); }
+
+    public Loja getLojaC(String codLoja){
+        for(Loja l : this.lojas.values()){
+            if(l.getCodLoja().equals(codLoja)) return l;
+        }
+        return null;
+    }
+
+    public Loja getLojaNome(String nome){
+        for(Loja l : this.lojas.values()){
+            if(l.getNome().equals(nome)) return l;
+        }
+        return null;
+    }
+
+    public Empresa getEmpresa(String email){ return this.empresas.get(email); }
+
+    public Empresa getEmpresaC(String codEmpresa){
+        for(Empresa e : this.empresas.values()){
+            if(e.getCodEmpresa().equals(codEmpresa)) return e;
+        }
+        return null;
+    }
+
+    public Encomenda getEncomenda(String cod) {return this.encomendas.get(cod);}
+
+    public Encomenda getEncomendaC(String codEncomenda){
+        for(Encomenda e : this.encomendas.values()){
+            if(e.getCodEncomenda().equals(codEncomenda)) return e;
+        }
+        return null;
+    }
+
+    public List<Encomenda> getAllEncomendas(String email, int op){
+        List<Encomenda> res = null;
+        switch(op){
+            case 2:
+                res = getUtilizador(email).getAllEncomendas();
+                break;
+            case 3:
+                res = getVoluntario(email).allEncomendas();
+                break;
+            case 4:
+                res = getLoja(email).allEncomendas();
+                break;
+            case 5:
+                res = getEmpresa(email).allEncomendas();
+                break;
+            default:
+                break;
+        }
+        return res;
+    }
+
 
     public void available(int tipo, String email, boolean state){
         if(tipo == 3) {
@@ -173,8 +251,8 @@ public class TrazAquiModel implements Serializable{
             for(int i=0; i<le.size(); i++){
                 Encomenda e =le.get(i);
                 if (e instanceof EncomendaMedica)
-                    if(dentroDoRaio(v,e, true)!=null) v.addToQueue(dentroDoRaio(v,e, true));
-                else if(dentroDoRaio(v,e, false)!=null) v.addToQueue(dentroDoRaio(v,e, false));
+                    if(dentroDoRaio(v,e, true)!=null) v.addEncomendaPorSinalizar(e);
+                else if(dentroDoRaio(v,e, false)!=null) v.addEncomendaPorSinalizar(e);
             }
         }
         else this.empresas.get(email).setDisponivel(state);
@@ -185,148 +263,79 @@ public class TrazAquiModel implements Serializable{
         else this.empresas.get(email).aceitaMedicamentos(state);
     }
 
-    /* Dado um voluntario vê se a encomenda dada se encontra no seu raio
-        Auxiliar da available
-    * */
+    /** Dado um voluntario vê se a encomenda dada se encontra no seu raio
+     * Auxiliar da available
+     */
     public Encomenda dentroDoRaio(Voluntario v ,Encomenda e,Boolean medica){
         GPS localizacao_voluntario= v.getGps();
         GPS localizacao_loja = getLojaC(e.getCodLoja()).getGps();
         GPS localizacao_u = getUtilizadorC(e.getCodUtilizador()).getGps();
         double dist_lu = localizacao_loja.distancia(localizacao_u);
         double dist_total = dist_lu+ localizacao_voluntario.distancia(localizacao_loja);
-        if(medica) {
-            if(v.isLicenca() && !(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())) return e;
+        if(v.isDisponivel() && dist_total<=v.getRaio()){
+            if(medica && v.isLicenca()) return e;
+            else return e;
         }
-        else if (!(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())) return e;
         return null;
     }
+    /** Dada uma encomenda vê se há voluntarios que a possam entregar
+     Seleciona o primeiro que encontrar
+     */
+    public Voluntario temVoluntario(Encomenda e){
+        GPS gpsLoja = getLojaC(e.getCodLoja()).getGps();
+        GPS gpsU = getUtilizadorC(e.getCodUtilizador()).getGps();
 
-    /* Dada uma encomenda vê se há voluntarios que a possam entregar
-        Seliciona o que estiver mais perto
-        Auxiliar da fazerEncomenda
-    * */
-    public Voluntario temVoluntario(Encomenda e, Boolean medica){
-        GPS localizacao_loja = getLojaC(e.getCodLoja()).getGps();
-        GPS localizacao_u = getUtilizadorC(e.getCodUtilizador()).getGps();
-        Double dist_v_escolhido=1000000.0;
-        Voluntario v_escolhido=null;
-        double dist_lu = localizacao_loja.distancia(localizacao_u);
+        double dist_lu = gpsLoja.distancia(gpsU);
+
         for (Voluntario v : voluntarios.values()){
-            double dist_total = dist_lu+ v.getGps().distancia(localizacao_loja);
-            if(medica) {
-                if(v.isLicenca() && !(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())){
-                   if (dist_total<dist_v_escolhido) {
-                        v_escolhido=v;
-                        dist_v_escolhido=dist_total;
-                    }
-                }
+            double dist_total = dist_lu + v.getGps().distancia(gpsLoja);
+            if(e instanceof EncomendaMedica && v.isDisponivel() && v.isLicenca() && dist_total<=v.getRaio()){
+                e.setDist_total(dist_total);
+                return v;
             }
-            else if (!(dist_lu>v.getRaio()) && v.isDisponivel() && !(dist_total>v.getRaio())){
-                if (dist_total<dist_v_escolhido) {
-                    v_escolhido=v;
-                    dist_v_escolhido=dist_total;
-                }
-            };
-        }
-        return v_escolhido;
-    }
-
-    /* Dada uma encomenda vê se há empresas que a possam entregar
-        Auxiliar da fazerEncomenda
-    * */
-    public  List<Empresa> empresasDisponiveis(Encomenda enc, Boolean medica){
-        List<Empresa> empresas_possiveis= new ArrayList<>();
-        GPS localizacao_loja = getLojaC(enc.getCodLoja()).getGps();
-        GPS localizacao_u = getUtilizadorC(enc.getCodUtilizador()).getGps();
-        double dist_lu = localizacao_loja.distancia(localizacao_u);
-        for (Empresa e : empresas.values()){
-            double dist_total = dist_lu+ e.getGps().distancia(localizacao_loja);
-            if(medica) {
-                if(e.isLicenca() && !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio())) empresas_possiveis.add(e);
+            else if(v.isDisponivel() && dist_total<=v.getRaio()) {
+                e.setDist_total(dist_total);
+                return v;
             }
-            else if ( !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio()) ) empresas_possiveis.add(e);
         }
         return null;
     }
 
-    /* Dada uma encomenda vê se há empresas que a possam entregar
-        Auxiliar da fazerEncomenda
-        passa as empresas para string para as podermos passar ao menuAuxiliar como uma list<string>
-                     ||
-                  SE SOUBERES, FAZ DE OUTRA MANEIRA
-    * */
+    /**
+     *  Dada uma encomenda vê se há empresas que a possam entregar e associa o custo do transporte
+     *  Auxiliar da fazerEncomenda
+     */
+    public  Map<Empresa, Double> empresasDisponiveis(Encomenda enc){
+        Map<Empresa, Double> res= new HashMap<>();
 
-    public  List<String> empresasDS(Encomenda enc,Boolean medica){
-        List<String> empresas_possiveis= new ArrayList<>();
-        GPS localizacao_loja = getLojaC(enc.getCodLoja()).getGps();
-        GPS localizacao_u = getUtilizadorC(enc.getCodUtilizador()).getGps();
-        double dist_lu = localizacao_loja.distancia(localizacao_u);
-        for (Empresa e : empresas.values()){
-            double dist_total = dist_lu+ e.getGps().distancia(localizacao_loja);
-            if(medica) {
-                if(e.isLicenca() && !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio())) empresas_possiveis.add(e.toStringTOclients());
+        GPS gpsLoja = getLojaC(enc.getCodLoja()).getGps();
+        GPS gpsU = getUtilizadorC(enc.getCodUtilizador()).getGps();
+        double dist_lu = gpsLoja.distancia(gpsU);
+
+        for (Empresa e : this.empresas.values()){
+            double dist_total = dist_lu+ e.getGps().distancia(gpsLoja);
+            Double custo = dist_total * e.getPrecokm();
+            if(e.isDisponivel() && dist_total <= e.getRaio()){
+                enc.setDist_total(dist_total);
+                if(enc instanceof EncomendaMedica && e.isLicenca()) res.put(e, custo);
+                else res.put(e, custo);
             }
-            else if ( !(dist_lu>e.getRaio()) && e.isDisponivel() && !(dist_total>e.getRaio()) ) empresas_possiveis.add(e.toStringTOclients());
         }
-        return null;
+        return res;
     }
 
     public List<String> encomendas_por_sinalizar(int tipo, String email){
 
-        if(tipo == 3) return this.voluntarios.get(email).getQueue().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
-        else return this.empresas.get(email).getQueue().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
+        if(tipo == 3) return this.voluntarios.get(email).getEncomendas_por_sinalizar().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
+        else return this.empresas.get(email).getEncomendas_por_sinalizar().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
     }
 
     public List<String> toEntrega(String lEmail){
        return this.lojas.get(lEmail).getQueue().stream().map(Encomenda::getCodEncomenda).collect(Collectors.toList());
     }
 
-    public Utilizador getUtilizador(String email){ return this.utilizadores.get(email); }
 
-    public Voluntario getVoluntario(String email){ return this.voluntarios.get(email); }
-
-    public Loja getLoja(String email){ return this.lojas.get(email); }
-
-    public Empresa getEmpresa(String email){ return this.empresas.get(email); }
-
-    public Encomenda getEncomenda(String cod) {return this.encomendas.get(cod);}
-
-
-    public Utilizador getUtilizadorC(String codUtilizador){
-        for(Utilizador u : this.utilizadores.values()){
-            if(u.getCodUtilizador().equals(codUtilizador)) return u;
-        }
-        return null;
-    }
-
-    public Voluntario getVoluntarioC(String codVoluntario){
-        for(Voluntario v : this.voluntarios.values()){
-            if(v.getCodVoluntario().equals(codVoluntario)) return v;
-        }
-        return null;
-    }
-
-    public Loja getLojaC(String codLoja){
-        for(Loja l : this.lojas.values()){
-            if(l.getCodLoja().equals(codLoja)) return l;
-        }
-        return null;
-    }
-
-    public Empresa getEmpresaC(String codEmpresa){
-        for(Empresa e : this.empresas.values()){
-            if(e.getCodEmpresa().equals(codEmpresa)) return e;
-        }
-        return null;
-    }
-
-    public Encomenda getEncomendaC(String codEncomenda){
-        for(Encomenda e : this.encomendas.values()){
-            if(e.getCodEncomenda().equals(codEncomenda)) return e;
-        }
-        return null;
-    }
-
+    /*CLONE*/
     public Map<String, Encomenda> getMEncomenda() {
         Map<String,Encomenda> ne = new HashMap<>();
         encomendas.forEach((key,value)->ne.put(key,value.clone()));
@@ -353,9 +362,9 @@ public class TrazAquiModel implements Serializable{
         return encomendas_espera_voluntario;
     }
 
-    public int nUsers() {
-        return utilizadores.size();
-    }
+
+    /*para debug */
+    public int nUsers() { return this.utilizadores.size(); }
 
     public int nVolu() {
         return voluntarios.size();
@@ -370,4 +379,31 @@ public class TrazAquiModel implements Serializable{
         return encomendas.size();
     }
 
+
+
+    public Set<Utilizador> top10Users(){
+        Set<Utilizador> user = new TreeSet<>((o1, o2) -> {
+            if(o1.nrEncomendas() > o2.nrEncomendas()) return -1;
+            if(o1.nrEncomendas() < o2.nrEncomendas()) return 1;
+            return o1.getNome().compareTo(o2.getNome());
+        });
+
+        if(this.utilizadores !=null){
+            this.utilizadores.values().stream().limit(10).forEach(e->user.add(e.clone()));
+        }
+        return user;
+    }
+
+    public Set<Empresa> top10Empresas(){
+        Set<Empresa> top = new TreeSet<>((o1, o2) -> {
+            if(o1.totalKms() > o2.totalKms()) return -1;
+            if(o1.totalKms() < o2.totalKms()) return 1;
+            return o1.getNome().compareTo(o2.getNome());
+        });
+
+        if(this.empresas !=null){
+            this.empresas.values().stream().limit(10).forEach(e->top.add(e.clone()));
+        }
+        return top;
+    }
 }

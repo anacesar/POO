@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public abstract class Entidade implements Serializable {
     private String password;
@@ -153,6 +154,5 @@ public abstract class Entidade implements Serializable {
      * @return clone da Entidade.
      */
     public abstract Entidade clone();
-
 }
 

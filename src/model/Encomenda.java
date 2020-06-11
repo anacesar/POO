@@ -3,7 +3,6 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,13 +15,13 @@ public class Encomenda implements Serializable {
     private double peso;
     private List<Linha_Encomenda> linhas;
 
-    private boolean entregue;
 
     /* após entrega da encomenda */
     private LocalDateTime data_entrega;
     private boolean classificada;
     private double tempo; //tempo que demorou a entrega da encomenda
     private double preco; //preco associado a entrega
+    private double dist_total;
 
     public Encomenda() {
         this.codEncomenda = "";
@@ -31,12 +30,11 @@ public class Encomenda implements Serializable {
         this.peso=0.0;
         this.linhas = new ArrayList<>();
 
-        this.entregue = false;
-
         this.data_entrega = null;
         this.classificada = false;
         this.tempo = 0;
         this.preco = calculaPreçoTotal();
+        this.dist_total = 0;
     }
 
 
@@ -50,25 +48,25 @@ public class Encomenda implements Serializable {
         this.data_entrega = null;
         this.tempo = 0;
         this.preco = calculaPreçoTotal();
+        this.dist_total = 0;
     }
 
     /**
      * Construtor parametrizado de uma encomenda.
      * Necessário para a criação de um Encomenda através da leitura do ficheiro de logs.
      */
-    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, ArrayList<Linha_Encomenda> linhas) {
+    public Encomenda(String codEncomenda, String codUtilizador, String codLoja, double peso, List<Linha_Encomenda> linhas) {
         this.codEncomenda = codEncomenda;
         this.codUtilizador = codUtilizador;
         this.codLoja = codLoja;
         this.peso=peso;
         this.linhas=linhas;
 
-        this.entregue = false;
-
         this.data_entrega = null;
         this.classificada = false;
         this.tempo = 0;
         this.preco = calculaPreçoTotal();
+        this.dist_total = 0;
     }
 
     public Encomenda(Encomenda encomenda) {
@@ -147,30 +145,16 @@ public class Encomenda implements Serializable {
 
     public void setPreco(double preco) { this.preco = preco; }
 
+    public double getDist_total() { return this.dist_total; }
+
+    public void setDist_total(double dist_total) { this.dist_total = dist_total; }
+
     public Encomenda clone(){
         return new Encomenda(this);
     }
 
     public double calculaPreçoTotal(){
         return this.linhas.stream().mapToDouble(Linha_Encomenda::calculaValorLinhaEnc).sum();
-    }
-
-    public int numeroTotalProdutos(){
-        int n=0;
-        for(Linha_Encomenda le : this.linhas)
-            n+= le.getQuantidade();
-        return n;
-    }
-
-    public boolean existeProdutoEncomenda(String refProduto){
-        boolean found = false;
-        Iterator<Linha_Encomenda> it = linhas.iterator();
-        Linha_Encomenda l;
-        while(it.hasNext() && !found){
-            l = it.next();
-            found = refProduto.compareTo(l.getCodProduto())==0;
-        }
-        return found;
     }
 
     public String toString(){

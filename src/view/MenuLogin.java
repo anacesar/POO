@@ -18,10 +18,12 @@ public class MenuLogin extends Menu implements Serializable {
     }
 
     public void executaParametros() {
+        System.out.println("Pressione 0 para sair");
         System.out.print("E-mail: ");
         this.email = leString();
         System.out.print("Password: ");
         this.password = leString();
+        if(this.email.equals("0") || this.password.equals("0") ) this.setOp(0);
     }
 
     public void executaReader(){

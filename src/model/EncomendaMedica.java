@@ -1,7 +1,6 @@
 package model;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 public class EncomendaMedica extends Encomenda {
 
@@ -9,7 +8,7 @@ public class EncomendaMedica extends Encomenda {
         super();
     }
 
-    public EncomendaMedica(String codEncomenda, String codUtilizador, String codLoja, double peso, ArrayList<Linha_Encomenda> linhas) {
+    public EncomendaMedica(String codEncomenda, String codUtilizador, String codLoja, double peso, List<Linha_Encomenda> linhas) {
         super(codEncomenda,codUtilizador,codLoja,peso,linhas);
     }
 }

@@ -53,7 +53,7 @@ public class Utilizador extends Entidade implements Serializable {
     }
 
     public List<Encomenda> getEncomendas_Standy() {
-        return this.encomendas_standby.stream().map(Encomenda::clone).collect(Collectors.toList());
+        return this.encomendas_standby.stream().collect(Collectors.toList());
     }
 
     public void setEncomendas_Standy(List<Encomenda> encomendas) {
@@ -64,6 +64,17 @@ public class Utilizador extends Entidade implements Serializable {
         return this.encomendas_entregues.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
 
+    public void setEncomendasEntregues(List<Encomenda> encomendas) {
+        this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
+    }
+
+    public List<Encomenda> getAllEncomendas(){
+        List<Encomenda> res = new ArrayList<>();
+        res.addAll(getEncomendas_entregues());
+        res.addAll(getEncomendas_Standy());
+
+        return res;
+    }
     public void setEncomendas_entregues(List<Encomenda> encomendas) {
         this.encomendas_entregues = encomendas.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
@@ -91,4 +102,7 @@ public class Utilizador extends Entidade implements Serializable {
         return new Utilizador(this);
     }
 
+    public Integer nrEncomendas() {
+        return this.encomendas_entregues.size() + this.encomendas_standby.size();
+    }
 }

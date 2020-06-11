@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,8 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
     private double precokm;
     private boolean disponivel;
     private boolean licenca;
-    private List<Encomenda> queue;
+    private double vkm = 65;
+    private List<Encomenda> encomendas_por_sinalizar;
     private List<Encomenda> encomendas_entregues; //tempo de entrega + custo da entrega
 
     public Empresa(String email, String password, String nome, GPS gps, String nif, double raio, double precokm, int number) {
@@ -24,7 +26,9 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         this.raio=raio;
         this.nif=nif;
         this.precokm=precokm;
-        this.queue = new ArrayList<>();
+        this.disponivel = true;
+        this.licenca = false;
+        this.encomendas_por_sinalizar = new ArrayList<>();
         this.encomendas_entregues = new ArrayList<>();
     }
 
@@ -38,7 +42,9 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         this.nif=nif;
         this.raio=raio;
         this.precokm=precokm;
-        this.queue = new ArrayList<>();
+        this.disponivel = true;
+        this.licenca = false;
+        this.encomendas_por_sinalizar = new ArrayList<>();
         this.encomendas_entregues = new ArrayList<>();
 
     }
@@ -50,7 +56,9 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
         this.nif=empresa.getNif();
         this.raio=empresa.getRaio();
         this.precokm=empresa.getPrecokm();
-        this.queue = empresa.getQueue();
+        this.disponivel = empresa.isDisponivel();
+        this.licenca = empresa.isLicenca();
+        this.encomendas_por_sinalizar = empresa.getEncomendas_por_sinalizar();
         this.encomendas_entregues = empresa.getEncomendas_entregues();
 
     }
@@ -108,22 +116,27 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
     }
 
 
-    public List<Encomenda> getQueue() {
-        return this.queue.stream().map(Encomenda::clone).collect(Collectors.toList());
+    public List<Encomenda> getEncomendas_por_sinalizar() {
+        return this.encomendas_por_sinalizar.stream().collect(Collectors.toList());
     }
 
-    public void addToQueue (Encomenda e){
-        this.queue.add(e);
+    public void addToEncomendasPorSinalizar (Encomenda e){
+        this.encomendas_por_sinalizar.add(e);
     }
 
     public List<Encomenda> getEncomendas_entregues() {
         return this.encomendas_entregues.stream().map(Encomenda::clone).collect(Collectors.toList());
     }
+    public double getVkm() { return this.vkm; }
 
+    public void setVkm(double vkm) { this.vkm = vkm; }
 
-    public Empresa clone() {
-        return new Empresa(this);
+    public void encomendaEntregue (Encomenda e){
+        e.setData(LocalDateTime.now());
+        e.setCodEntidade_transportadora(this.codEmpresa);
+        this.encomendas_por_sinalizar.add(e);
     }
+
 
     @Override
     public boolean aceitoTransporteMedicamentos() { return this.licenca; }
@@ -132,12 +145,40 @@ public class Empresa extends Entidade implements Serializable, LicencaMedica {
     public void aceitaMedicamentos(boolean state) { this.licenca = state; }
 
 
-    public void sinalizarEncomenda(int index, double time, double price){
-        Encomenda encomenda = this.queue.remove(index);
-        encomenda.setTempo(time);
-        encomenda.setPreco(price);
+    public void sinalizarEncomenda(Encomenda encomenda){
+        this.encomendas_por_sinalizar.remove(encomenda);
         this.encomendas_entregues.add(encomenda);
     }
+
+    public List<Encomenda> allEncomendas(){
+        List<Encomenda> res = new ArrayList<>();
+        res.addAll(getEncomendas_entregues());
+        res.addAll(getEncomendas_por_sinalizar());
+        return res;
+    }
+
+
+    public double totalFaturado(LocalDateTime di, LocalDateTime df){
+        double total = 0;
+
+        total += this.encomendas_por_sinalizar.stream().filter(encomenda -> encomenda.getData().isAfter(di) && encomenda.getData().isBefore(df)).mapToDouble(Encomenda::calculaPreçoTotal).sum();
+        total += this.encomendas_entregues.stream().filter(encomenda -> encomenda.getData().isAfter(di) && encomenda.getData().isBefore(df)).mapToDouble(Encomenda::calculaPreçoTotal).sum();
+
+        return total;
+    }
+
+
+    public double totalKms(){
+        double total = 0;
+
+        total += this.encomendas_por_sinalizar.stream().mapToDouble(Encomenda::getDist_total).sum();
+        total += this.encomendas_entregues.stream().mapToDouble(Encomenda::getDist_total).sum();
+
+        return total;
+    }
+
+
+    public Empresa clone() { return new Empresa(this); }
 
     public String toString(){
         StringBuilder sb = new StringBuilder();

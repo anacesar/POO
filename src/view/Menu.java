@@ -3,6 +3,7 @@ package view;
 import model.GPS;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -148,9 +149,38 @@ public class Menu implements Serializable {
         return op;
     }
 
+    public LocalDateTime lerData(){
+        int dataD,dataM,dataA;
+        do {
+            System.out.print("Inserir dia: ");
+            dataD = leInt();
+        }while(dataD<=0 || dataD > 31);
+
+        do {
+            System.out.print("Inserir mês: ");
+            dataM = leInt();
+        }while(dataM<=0 || dataM > 12);
+
+        do {
+            System.out.print("Inserir ano: ");
+            dataA = leInt();
+        }while(dataA==-1 || dataA > 2020);
+
+        return LocalDateTime.of(dataA,dataM,dataD,0, 0);
+    }
+
     public void setOp(int op){ this.op = op; }
+
+    public String getOpcion(int op){ return this.opcoes.get(op); }
 
     public void sendMessage(String message){
         System.out.println(message);
     }
+
+    public void sendMessage(String message, double d, String last){
+        System.out.print(message);
+        System.out.printf("%.2f", d);
+        System.out.println(last);
+    }
+
 }

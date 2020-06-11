@@ -3,14 +3,32 @@
   <component name="ChangeListManager">
     <list default="true" id="496fee7c-2111-42d0-af9b-95af28c68a8b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/estado.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/TrazAquiApp.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/TrazAquiApp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/controller/TrazAquiController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/controller/TrazAquiController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/Empresa.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/Empresa.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/Encomenda.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/Encomenda.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/EncomendaMedica.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/EncomendaMedica.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/Entidade.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/Entidade.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/Loja.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/Loja.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/Parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/Parser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/TrazAquiModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/TrazAquiModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/Utilizador.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/Utilizador.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/model/Voluntario.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/model/Voluntario.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/POO/view/Menu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/POO/view/Menu.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/TrazAquiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/TrazAquiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/logs.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Empresa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Empresa.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Encomenda.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Encomenda.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/EncomendaMedica.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/EncomendaMedica.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Linha_Encomenda.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Linha_Encomenda.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Entidade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Entidade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Loja.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Loja.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Parser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/TrazAquiModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/TrazAquiModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Utilizador.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Utilizador.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Voluntario.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Voluntario.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/view/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/Menu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/view/MenuLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/MenuLogin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,53 +127,58 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591200321642">
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591873368689">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1591200321642" />
-    <state x="533" y="152" key="#com.intellij.ide.util.MemberChooser" timestamp="1591712530055">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1591873368689" />
+    <state x="533" y="132" key="#com.intellij.ide.util.MemberChooser" timestamp="1591896595193">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state x="533" y="132" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900@0.0.1440.900" timestamp="1591896595193" />
     <state x="533" y="152" key="#com.intellij.ide.util.MemberChooser/0.23.1440.877@0.23.1440.877" timestamp="1591712530055" />
     <state x="570" y="346" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1590586536001">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="570" y="346" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1440.900@0.0.1440.900" timestamp="1590586536001" />
-    <state width="1398" height="239" key="GridCell.Tab.0.bottom" timestamp="1591716309210">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="460" key="GridCell.Tab.0.bottom" timestamp="1591898858370">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="395" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1591347815052" />
+    <state width="1398" height="460" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1591898858370" />
     <state width="1398" height="239" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1591716309210" />
-    <state width="1398" height="239" key="GridCell.Tab.0.center" timestamp="1591716309209">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="460" key="GridCell.Tab.0.center" timestamp="1591898858368">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="395" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1591347815050" />
+    <state width="1398" height="460" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1591898858368" />
     <state width="1398" height="239" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1591716309209" />
-    <state width="1398" height="239" key="GridCell.Tab.0.left" timestamp="1591716309209">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="460" key="GridCell.Tab.0.left" timestamp="1591898858367">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="395" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1591347815049" />
+    <state width="1398" height="460" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1591898858367" />
     <state width="1398" height="239" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1591716309209" />
-    <state width="1398" height="239" key="GridCell.Tab.0.right" timestamp="1591716309210">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="460" key="GridCell.Tab.0.right" timestamp="1591898858369">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="395" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1591347815050" />
+    <state width="1398" height="460" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1591898858369" />
     <state width="1398" height="239" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1591716309210" />
-    <state width="1398" height="285" key="GridCell.Tab.1.bottom" timestamp="1591714766895">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="302" key="GridCell.Tab.1.bottom" timestamp="1591873625733">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state width="1398" height="302" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1591873625733" />
     <state width="1398" height="285" key="GridCell.Tab.1.bottom/0.23.1440.877@0.23.1440.877" timestamp="1591714766895" />
-    <state width="1398" height="285" key="GridCell.Tab.1.center" timestamp="1591714766894">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="302" key="GridCell.Tab.1.center" timestamp="1591873625732">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state width="1398" height="302" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1591873625732" />
     <state width="1398" height="285" key="GridCell.Tab.1.center/0.23.1440.877@0.23.1440.877" timestamp="1591714766894" />
-    <state width="1398" height="285" key="GridCell.Tab.1.left" timestamp="1591714766890">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="302" key="GridCell.Tab.1.left" timestamp="1591873625731">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state width="1398" height="302" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1591873625731" />
     <state width="1398" height="285" key="GridCell.Tab.1.left/0.23.1440.877@0.23.1440.877" timestamp="1591714766890" />
-    <state width="1398" height="285" key="GridCell.Tab.1.right" timestamp="1591714766895">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1398" height="302" key="GridCell.Tab.1.right" timestamp="1591873625732">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state width="1398" height="302" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1591873625732" />
     <state width="1398" height="285" key="GridCell.Tab.1.right/0.23.1440.877@0.23.1440.877" timestamp="1591714766895" />
     <state x="399" y="298" key="com.intellij.ide.util.TipDialog" timestamp="1591708686541">
       <screen x="0" y="23" width="1440" height="877" />
